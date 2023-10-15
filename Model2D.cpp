@@ -14,10 +14,10 @@ Model2D::Model2D(const std::vector<Vector2D>& vertices, const std::vector<int> i
         m_modelMatrix(i+1, 3) = 1.0;
     }
 }
-void Model2D::applyTransformation(Matrix<>& _transformationMatrix)
+void Model2D::applyTransformation(Matrix<> transformationMatrix)
 {
     // Умножаем текущую матрицу модели на матрицу преобразования
-    Matrix<>transformationMatrix = _transformationMatrix;
+    //Matrix<>transformationMatrix = _transformationMatrix;
     for (size_t i = 0; i < m_vertices.size(); i++)
     {
         Matrix<>modelMatrix(3, 1);
@@ -38,7 +38,7 @@ void Model2D::applyTransformation(Matrix<>& _transformationMatrix)
     }
 }
 
-Vector2D Model2D::goToOXOY()
+Vector2D Model2D::getOXOYVector()
 {
     return Vector2D(-m_vertices[0].x(), -m_vertices[0].y());
 }

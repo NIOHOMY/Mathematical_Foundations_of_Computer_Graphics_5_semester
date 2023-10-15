@@ -55,17 +55,17 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             // Установите значение hWnd при создании окна
             hdc = GetDC(hWnd);
 
+            /*
             // Создаем 2D-модель треугольника.
             std::vector<Vector2D> vertices = loader.vertices();
             std::vector<int> indices = loader.indices();
             figures.push_back(new Model2D(vertices, indices));
             //Model2D triangle(vertices, indices);
+            */
             // Создаем 2D-модель квадрата.
-            /*
             std::vector<Vector2D> vertices2 = loader2.vertices();
             std::vector<int> indices2 = loader2.indices();
             figures.push_back(new Model2D(vertices2, indices2));
-            */
 
             // Инициализируем экземпляр класса Render2D и добавляем треугольник в список объектов.
             for (Model2D* _model : figures)
@@ -89,80 +89,58 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             Model2D* model = render.getObject(0);
             
-            Vector2D O = model->goToOXOY();
-            Matrix<> ToO = Translation(O.x(), O.y());
-            Matrix<> BackO = Translation(-O.x(), -O.y());
-            // Создаем матрицы преобразования
-            Matrix<> up = Translation(0,-50);
-            Matrix<> down = Translation(0,50);
-            Matrix<> left = Translation(-50,0);
-            Matrix<> right = Translation(50,0);
-
-            Matrix<> minimise = Scaling(0.5,0.5);
-            Matrix<> maximise = Scaling(2,2);
-
-            Matrix<> reflectionX = ReflectionX();
-            Matrix<> reflectionY = ReflectionY();
-
-            Matrix<> leftRotation = Rotation(10);
-            Matrix<> rightRotation = Rotation(-10);
+            Vector2D O = model->getOXOYVector();
 
             switch (wp)
             {
                 case 'W':
-                    model->applyTransformation(up);
+                    model->applyTransformation(Translation(0, -50));
                     break;
                 case 'A':
-                    model->applyTransformation(left);
+                    model->applyTransformation(Translation(-50, 0));
             
                     break;
                 case 'S':
-                    model->applyTransformation(down);
+                    model->applyTransformation(Translation(0, 50));
             
                     break;
                 case 'D':
-                    model->applyTransformation(right);
+                    model->applyTransformation(Translation(50, 0));
                     break;
                 case 'Z':
                 {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(minimise);
-                    model->applyTransformation(BackO);
+                    model->applyTransformation(Scaling(0.5, 0.5) * Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'X':
-                {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(maximise);
-                    model->applyTransformation(BackO);
+                {   
+                    model->applyTransformation(Scaling(2, 2) * Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'R':
                 {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(reflectionX);
-                    model->applyTransformation(BackO);
+                    model->applyTransformation(ReflectionX()* Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'F':
                 {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(reflectionY);
-                    model->applyTransformation(BackO);
+                    model->applyTransformation(ReflectionY() * Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'Q':
                 {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(leftRotation);
-                    model->applyTransformation(BackO);
+                    model->applyTransformation(Rotation(-10)* Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'E':
                 {
-                    model->applyTransformation(ToO);
-                    model->applyTransformation(rightRotation);
-                    model->applyTransformation(BackO);
+                    model->applyTransformation(Rotation(10)* Translation(O.x(), O.y()));
+                    model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 break;
