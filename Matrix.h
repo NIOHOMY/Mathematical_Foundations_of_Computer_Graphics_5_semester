@@ -1,9 +1,9 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
 
 using namespace std;
 
-template <typename Cell = float>
+template <typename Cell = double>
 class Matrix
 {
 private:
@@ -27,13 +27,13 @@ public:
 
 	Cell& operator()(int i, int j) { return m_cells[i - 1][j - 1]; }
 
-	Matrix& operator = (const Matrix&);		// Перегрузка оператора присваивания
-	Matrix  operator + (const Matrix&);		// Сложение матриц
-	Matrix  operator - (const Matrix&);		// Вычитание матриц
-	Matrix  operator * (const Matrix&);		// Умножение матриц
+	Matrix& operator = (const Matrix&);		// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
+	Matrix  operator + (const Matrix&);		// Г‘Г«Г®Г¦ГҐГ­ГЁГҐ Г¬Г ГІГ°ГЁГ¶
+	Matrix  operator - (const Matrix&);		// Г‚Г»Г·ГЁГІГ Г­ГЁГҐ Г¬Г ГІГ°ГЁГ¶
+	Matrix  operator * (const Matrix&);		// Г“Г¬Г­Г®Г¦ГҐГ­ГЁГҐ Г¬Г ГІГ°ГЁГ¶
 
-	friend istream& operator >> <> (istream&, Matrix&);			// Перегрузка оператора >> для ввода матрицы
-	friend ostream& operator << <> (ostream&, const Matrix&);	// Перегрузка оператора << для вывода матрицы
+	friend istream& operator >> <> (istream&, Matrix&);			// РџРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° >> РґР»СЏ РІРІРѕРґР° РјР°С‚СЂРёС†С‹
+	friend ostream& operator << <> (ostream&, const Matrix&);	// РџРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° << РґР»СЏ РІС‹РІРѕРґР° РјР°С‚СЂРёС†С‹
 };
 
 template <typename Cell>
@@ -57,8 +57,16 @@ Matrix<Cell>::Matrix(int n_nRows, int n_nCols)
 template <typename Cell>
 Matrix<Cell>::Matrix(int n_nRows, int n_nCols, Cell* list)
 {
-
+	AllocateCells(n_nRows, n_nCols);
+	int index = 0;
+	for (int i = 0; i < n_nRows; i++) {
+		for (int j = 0; j < n_nCols; j++) {
+			m_cells[i][j] = list[index];
+			index++;
+		}
+	}
 }
+
 
 template <typename Cell>
 Matrix<Cell>::~Matrix()
@@ -69,6 +77,18 @@ Matrix<Cell>::~Matrix()
 template <typename Cell>
 Matrix<Cell>& Matrix<Cell>::operator=(const Matrix& M)
 {
+	if (this != &M) {
+		// РћС‡РёСЃС‚РёС‚СЊ С‚РµРєСѓС‰СѓСЋ РјР°С‚СЂРёС†Сѓ
+		FreeCells();
+		// Р’С‹РґРµР»РёС‚СЊ РїР°РјСЏС‚СЊ Р·Р°РЅРѕРІРѕ
+		AllocateCells(M.n_nRows, M.n_nCols);
+		// РЎРєРѕРїРёСЂРѕРІР°С‚СЊ СЌР»РµРјРµРЅС‚С‹
+		for (int i = 0; i < n_nRows; i++) {
+			for (int j = 0; j < n_nCols; j++) {
+				m_cells[i][j] = M.m_cells[i][j];
+			}
+		}
+	}
 	return *this;
 }
 
@@ -76,11 +96,12 @@ template <typename Cell>
 Matrix<Cell> Matrix<Cell>::operator+(const Matrix& M)
 {
 	Matrix<Cell> res(*this);
-	if (n_nRows == M.n_nRows && n_nCols == M.n_nCols)
-	{
-		for (int i = 0; i < n_nRows; i++)
-			for (int j = 0; j < n_nCols; j++)
+	if (n_nRows == M.n_nRows && n_nCols == M.n_nCols) {
+		for (int i = 0; i < n_nRows; i++) {
+			for (int j = 0; j < n_nCols; j++) {
 				res.m_cells[i][j] += M.m_cells[i][j];
+			}
+		}
 	}
 	return res;
 }
@@ -88,14 +109,35 @@ Matrix<Cell> Matrix<Cell>::operator+(const Matrix& M)
 template <typename Cell>
 Matrix<Cell> Matrix<Cell>::operator-(const Matrix& M)
 {
-	return Matrix();
+	Matrix<Cell> res(*this);
+	if (n_nRows == M.n_nRows && n_nCols == M.n_nCols) {
+		for (int i = 0; i < n_nRows; i++) {
+			for (int j = 0; j < n_nCols; j++) {
+				res.m_cells[i][j] -= M.m_cells[i][j];
+			}
+		}
+	}
+	return res;
 }
 
 template <typename Cell>
 Matrix<Cell> Matrix<Cell>::operator*(const Matrix& M)
 {
-	return Matrix();
+	Matrix<Cell> res(n_nRows, M.n_nCols);
+	if (n_nCols == M.n_nRows) {
+		for (int i = 0; i < n_nRows; i++) {
+			for (int j = 0; j < M.n_nCols; j++) {
+				Cell sum = 0;
+				for (int k = 0; k < n_nCols; k++) {
+					sum += m_cells[i][k] * M.m_cells[k][j];
+				}
+				res.m_cells[i][j] = sum;
+			}
+		}
+	}
+	return res;
 }
+
 
 template <typename Cell>
 void Matrix<Cell>::AllocateCells(int nRows, int nCols)

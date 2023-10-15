@@ -20,5 +20,47 @@ Matrix<> Identity()
 	return Matrix<>(3, 3, I);
 }
 
+Matrix<> Rotation(double angle)
+{
+    double cosA = cos(angle);
+    double sinA = sin(angle);
+    double R[9] = {
+        cosA, -sinA, 0,
+        sinA, cosA, 0,
+        0, 0, 1
+    };
+    return Matrix<>(3, 3, R);
+}
+
+Matrix<> Scaling(double scaleX, double scaleY)
+{
+    double S[9] = {
+        scaleX, 0, 0,
+        0, scaleY, 0,
+        0, 0, 1
+    };
+    return Matrix<>(3, 3, S);
+}
+
+Matrix<> ReflectionX()
+{
+    double RX[9] = {
+        1, 0, 0,
+        0, -1, 0,
+        0, 0, 1
+    };
+    return Matrix<>(3, 3, RX);
+}
+
+Matrix<> ReflectionY()
+{
+    double RY[9] = {
+        -1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+    };
+    return Matrix<>(3, 3, RY);
+}
+
 
 #endif AFFINE_TRANSFORM_H

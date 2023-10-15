@@ -33,6 +33,9 @@
     <ClInclude Include="Render2D.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="triangle.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
