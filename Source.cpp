@@ -43,14 +43,14 @@ WNDCLASS createWindowClass(HBRUSH bgColor, HCURSOR cursor, HINSTANCE hInstance, 
 
 LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-    static Loader loader("triangle.txt"); // Путь к файлу треугольника
-
     static HDC hdc = NULL; // Добавьте статическую переменную hdc
 
     switch (msg)
     {
     case WM_CREATE:
     {
+        static Loader loader("triangle.txt"); // Путь к файлу треугольника
+        static Loader loader2("square.txt"); // Путь к файлу треугольника
         // Установите значение hWnd при создании окна
         hdc = GetDC(hWnd);
 
@@ -59,6 +59,10 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
         std::vector<int> indices = loader.indices();
         figures.push_back(new Model2D(vertices, indices));
         //Model2D triangle(vertices, indices);
+        // Создаем 2D-модель квадрата.
+        std::vector<Vector2D> vertices2 = loader2.vertices();
+        std::vector<int> indices2 = loader2.indices();
+        figures.push_back(new Model2D(vertices2, indices2));
 
         // Инициализируем экземпляр класса Render2D и добавляем треугольник в список объектов.
         for (Model2D* _model : figures)
