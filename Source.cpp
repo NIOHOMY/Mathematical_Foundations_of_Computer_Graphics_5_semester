@@ -87,15 +87,23 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
         }
         case WM_KEYDOWN:
         {
+            Model2D* model = render.getObject(0);
+            
+            Vector2D O = model->goToOXOY();
+            Matrix<> ToO = Translation(O.x(), O.y());
+            Matrix<> BackO = Translation(-O.x(), -O.y());
             // Создаем матрицы преобразования
             Matrix<> up = Translation(0,-50);
             Matrix<> down = Translation(0,50);
             Matrix<> left = Translation(-50,0);
             Matrix<> right = Translation(50,0);
+
             Matrix<> minimise = Scaling(0.5,0.5);
             Matrix<> maximise = Scaling(2,2);
 
-            Model2D* model = render.getObject(0);
+            Matrix<> reflectionX = ReflectionX();
+            Matrix<> reflectionY = ReflectionY();
+
             switch (wp)
             {
                 case 'W':
@@ -114,22 +122,30 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                     break;
                 case 'Z':
                 {
-                    Vector2D O = model->goToOXOY();
-                    Matrix<> T = Translation(O.x(), O.y());
-                    model->applyTransformation(T);
+                    model->applyTransformation(ToO);
                     model->applyTransformation(minimise);
-                    Matrix<> B = Translation(-O.x(), -O.y());
-                    model->applyTransformation(B);
+                    model->applyTransformation(BackO);
                     break;
                 }
                 case 'X':
                 {
-                    Vector2D O = model->goToOXOY();
-                    Matrix<> T = Translation(O.x(), O.y());
-                    model->applyTransformation(T);
+                    model->applyTransformation(ToO);
                     model->applyTransformation(maximise);
-                    Matrix<> B = Translation(-O.x(), -O.y());
-                    model->applyTransformation(B);
+                    model->applyTransformation(BackO);
+                    break;
+                }
+                case 'R':
+                {
+                    model->applyTransformation(ToO);
+                    model->applyTransformation(reflectionX);
+                    model->applyTransformation(BackO);
+                    break;
+                }
+                case 'F':
+                {
+                    model->applyTransformation(ToO);
+                    model->applyTransformation(reflectionY);
+                    model->applyTransformation(BackO);
                     break;
                 }
                 break;
