@@ -104,6 +104,9 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             Matrix<> reflectionX = ReflectionX();
             Matrix<> reflectionY = ReflectionY();
 
+            Matrix<> leftRotation = Rotation(10);
+            Matrix<> rightRotation = Rotation(-10);
+
             switch (wp)
             {
                 case 'W':
@@ -145,6 +148,20 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 {
                     model->applyTransformation(ToO);
                     model->applyTransformation(reflectionY);
+                    model->applyTransformation(BackO);
+                    break;
+                }
+                case 'Q':
+                {
+                    model->applyTransformation(ToO);
+                    model->applyTransformation(leftRotation);
+                    model->applyTransformation(BackO);
+                    break;
+                }
+                case 'E':
+                {
+                    model->applyTransformation(ToO);
+                    model->applyTransformation(rightRotation);
                     model->applyTransformation(BackO);
                     break;
                 }
