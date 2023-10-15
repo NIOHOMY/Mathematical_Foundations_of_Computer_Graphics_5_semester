@@ -7,8 +7,6 @@
 WNDCLASS createWindowClass(HBRUSH bgColor, HCURSOR cursor, HINSTANCE hInstance, HICON icon, LPCWSTR windowName, WNDPROC windowProcedure);
 LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp);
 
-Render2D render;
-std::vector<Model2D*> figures;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -44,30 +42,25 @@ WNDCLASS createWindowClass(HBRUSH bgColor, HCURSOR cursor, HINSTANCE hInstance, 
 
 LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-    static HDC hdc = NULL; // Добавьте статическую переменную hdc
-
+    static HDC hdc = NULL; 
+    static Render2D render;
+    static std::vector<Model2D*> figures;
+    static int currentIndex = 0;
     switch (msg)
     {
         case WM_CREATE:
         {
-            static Loader loader("triangle.txt"); // Путь к файлу треугольника
-            static Loader loader2("square.txt"); // Путь к файлу треугольника
-            // Установите значение hWnd при создании окна
+            std::vector<std::string> fileNames = { "triangle.txt", "square.txt" }; // Массив путей к файлам
+            
             hdc = GetDC(hWnd);
+            for (const std::string& fileName : fileNames)
+            {
+                Loader loader(fileName);
+                std::vector<Vector2D> vertices = loader.vertices();
+                std::vector<int> indices = loader.indices();
+                figures.push_back(new Model2D(vertices, indices));
+            }
 
-            /*
-            // Создаем 2D-модель треугольника.
-            std::vector<Vector2D> vertices = loader.vertices();
-            std::vector<int> indices = loader.indices();
-            figures.push_back(new Model2D(vertices, indices));
-            //Model2D triangle(vertices, indices);
-            */
-            // Создаем 2D-модель квадрата.
-            std::vector<Vector2D> vertices2 = loader2.vertices();
-            std::vector<int> indices2 = loader2.indices();
-            figures.push_back(new Model2D(vertices2, indices2));
-
-            // Инициализируем экземпляр класса Render2D и добавляем треугольник в список объектов.
             for (Model2D* _model : figures)
             {
                 render.addObject(_model);
@@ -85,9 +78,38 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             EndPaint(hWnd, &ps);
             break;
         }
+        case VK_LEFT:
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = figures.size() - 1;
+            }
+            break;
+        case VK_RIGHT:
+            currentIndex++;
+            if (currentIndex >= figures.size()) {
+                currentIndex = 0;
+            }
+            break;
         case WM_KEYDOWN:
         {
-            Model2D* model = render.getObject(0);
+            switch (wp)
+            {
+            case VK_LEFT:
+                currentIndex--;
+                if (currentIndex < 0) {
+                    currentIndex = figures.size() - 1;
+                }
+                break;
+            case VK_RIGHT:
+                currentIndex++;
+                if (currentIndex >= figures.size()) {
+                    currentIndex = 0;
+                }
+                break;
+            default:
+                break;
+            }
+            Model2D* model = render.getObject(currentIndex);
             
             Vector2D O = model->getOXOYVector();
 
