@@ -14,6 +14,35 @@ Model2D::Model2D(const std::vector<Vector2D>& vertices, const std::vector<int> i
         m_modelMatrix(i+1, 3) = 1.0;
     }
 }
+void Model2D::applyTransformation(Matrix<>& _transformationMatrix)
+{
+    // Умножаем текущую матрицу модели на матрицу преобразования
+    Matrix<>transformationMatrix = _transformationMatrix;
+    for (size_t i = 0; i < m_vertices.size(); i++)
+    {
+        Matrix<>modelMatrix(3, 1);
+        modelMatrix(1, 1) = m_modelMatrix(i+1, 1);
+        modelMatrix(2, 1) = m_modelMatrix(i+1, 2);
+        modelMatrix(3, 1) = 1.0;
+
+        modelMatrix = modelMatrix*transformationMatrix;
+
+        m_modelMatrix(i + 1, 1) = modelMatrix(1,1);
+        m_modelMatrix(i + 1, 2) = modelMatrix(2,1);
+    }
+
+    // Применяем преобразование ко всем вершинам модели
+    for (int i = 0; i < m_vertices.size(); i++) {
+        m_vertices[i].setX(m_modelMatrix(i + 1, 1));
+        m_vertices[i].setY(m_modelMatrix(i + 1, 2));
+    }
+}
+
+Vector2D Model2D::goToOXOY()
+{
+    return Vector2D(-m_vertices[0].x(), -m_vertices[0].y());
+}
+
 
 
 void Model2D::draw(const HDC& hdc)

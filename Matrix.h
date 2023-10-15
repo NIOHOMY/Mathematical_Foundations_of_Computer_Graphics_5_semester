@@ -120,11 +120,26 @@ Matrix<Cell> Matrix<Cell>::operator-(const Matrix& M)
 	return res;
 }
 
+/*
+T = | a*x + b*y + c |
+	| d*x + e*y + f |
+	| 1             |
+
+M = | a  b  c |
+	| d  e  f |
+	| 0  0  1 |
+
+P = | x |
+	| y |
+	| 1 |
+
+*/
 template <typename Cell>
 Matrix<Cell> Matrix<Cell>::operator*(const Matrix& M)
 {
-	Matrix<Cell> res(n_nRows, M.n_nCols);
+
 	if (n_nCols == M.n_nRows) {
+		Matrix<Cell> res(n_nRows, M.n_nCols);
 		for (int i = 0; i < n_nRows; i++) {
 			for (int j = 0; j < M.n_nCols; j++) {
 				Cell sum = 0;
@@ -134,8 +149,20 @@ Matrix<Cell> Matrix<Cell>::operator*(const Matrix& M)
 				res.m_cells[i][j] = sum;
 			}
 		}
+		return res;
 	}
-	return res;
+	else if (n_nCols == 1)
+	{
+		Matrix<Cell> res(n_nRows, n_nCols);
+		res.m_cells[0][0]= m_cells[0][0] * M.m_cells[0][0] + M.m_cells[0][1]*m_cells[1][0]+ M.m_cells[0][2];
+		res.m_cells[1][0]= m_cells[0][0] * M.m_cells[1][0] + M.m_cells[1][1]*m_cells[1][0]+ M.m_cells[1][2];
+		res.m_cells[2][0]=1.0;
+		return res;
+	}
+	else
+	{
+		return Matrix<Cell>(n_nRows, M.n_nCols);
+	}
 }
 
 

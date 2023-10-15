@@ -1,5 +1,6 @@
 ﻿#include <Windows.h>
 #include <windowsx.h>
+#include "AffineTransform.h"
 #include "Loader.h"
 #include "Render2D.h"
 
@@ -47,47 +48,104 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
     switch (msg)
     {
-    case WM_CREATE:
-    {
-        static Loader loader("triangle.txt"); // Путь к файлу треугольника
-        static Loader loader2("square.txt"); // Путь к файлу треугольника
-        // Установите значение hWnd при создании окна
-        hdc = GetDC(hWnd);
-
-        // Создаем 2D-модель треугольника.
-        std::vector<Vector2D> vertices = loader.vertices();
-        std::vector<int> indices = loader.indices();
-        figures.push_back(new Model2D(vertices, indices));
-        //Model2D triangle(vertices, indices);
-        // Создаем 2D-модель квадрата.
-        std::vector<Vector2D> vertices2 = loader2.vertices();
-        std::vector<int> indices2 = loader2.indices();
-        figures.push_back(new Model2D(vertices2, indices2));
-
-        // Инициализируем экземпляр класса Render2D и добавляем треугольник в список объектов.
-        for (Model2D* _model : figures)
+        case WM_CREATE:
         {
-            render.addObject(_model);
+            static Loader loader("triangle.txt"); // Путь к файлу треугольника
+            static Loader loader2("square.txt"); // Путь к файлу треугольника
+            // Установите значение hWnd при создании окна
+            hdc = GetDC(hWnd);
+
+            // Создаем 2D-модель треугольника.
+            std::vector<Vector2D> vertices = loader.vertices();
+            std::vector<int> indices = loader.indices();
+            figures.push_back(new Model2D(vertices, indices));
+            //Model2D triangle(vertices, indices);
+            // Создаем 2D-модель квадрата.
+            /*
+            std::vector<Vector2D> vertices2 = loader2.vertices();
+            std::vector<int> indices2 = loader2.indices();
+            figures.push_back(new Model2D(vertices2, indices2));
+            */
+
+            // Инициализируем экземпляр класса Render2D и добавляем треугольник в список объектов.
+            for (Model2D* _model : figures)
+            {
+                render.addObject(_model);
+            }
+            break;
         }
-        break;
-    }
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        hdc = BeginPaint(hWnd, &ps);
-        render.draw(hdc);
-        EndPaint(hWnd, &ps);
-        break;
-    }
-    default:
-        if (hWnd == NULL) { // Проверяем значение hWnd перед вызовом DefWindowProc
-            OutputDebugStringA("Error: invalid HDC.\n");
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            break;
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            hdc = BeginPaint(hWnd, &ps);
+            render.draw(hdc);
+            EndPaint(hWnd, &ps);
+            break;
         }
-        else {
-            return DefWindowProc(hWnd, msg, wp, lp);
+        case WM_KEYDOWN:
+        {
+            // Создаем матрицы преобразования
+            Matrix<> up = Translation(0,-50);
+            Matrix<> down = Translation(0,50);
+            Matrix<> left = Translation(-50,0);
+            Matrix<> right = Translation(50,0);
+            Matrix<> minimise = Scaling(0.5,0.5);
+            Matrix<> maximise = Scaling(2,2);
+
+            Model2D* model = render.getObject(0);
+            switch (wp)
+            {
+                case 'W':
+                    model->applyTransformation(up);
+                    break;
+                case 'A':
+                    model->applyTransformation(left);
+            
+                    break;
+                case 'S':
+                    model->applyTransformation(down);
+            
+                    break;
+                case 'D':
+                    model->applyTransformation(right);
+                    break;
+                case 'Z':
+                {
+                    Vector2D O = model->goToOXOY();
+                    Matrix<> T = Translation(O.x(), O.y());
+                    model->applyTransformation(T);
+                    model->applyTransformation(minimise);
+                    Matrix<> B = Translation(-O.x(), -O.y());
+                    model->applyTransformation(B);
+                    break;
+                }
+                case 'X':
+                {
+                    Vector2D O = model->goToOXOY();
+                    Matrix<> T = Translation(O.x(), O.y());
+                    model->applyTransformation(T);
+                    model->applyTransformation(maximise);
+                    Matrix<> B = Translation(-O.x(), -O.y());
+                    model->applyTransformation(B);
+                    break;
+                }
+                break;
+            }
+
+            InvalidateRect(hWnd, NULL, TRUE);
+            break;
+        }
+        default:
+        {
+            if (hWnd == NULL) { // Проверяем значение hWnd перед вызовом DefWindowProc
+                OutputDebugStringA("Error: invalid HDC.\n");
+            }
+            else {
+                return DefWindowProc(hWnd, msg, wp, lp);
+            }
         }
     }
 

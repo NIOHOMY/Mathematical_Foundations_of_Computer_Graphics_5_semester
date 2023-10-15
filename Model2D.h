@@ -11,6 +11,9 @@ public:
 	Model2D() = default;
 	Model2D(const std::vector<Vector2D> &vertices, const std::vector<int> indices);
 
+	void applyTransformation(Matrix<>& transformationMatrix);
+	Vector2D goToOXOY();
+
 	void draw(const HDC& hdc);
 
 private:
