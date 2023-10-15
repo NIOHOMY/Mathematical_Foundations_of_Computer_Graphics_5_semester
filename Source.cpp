@@ -50,7 +50,15 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
     {
         case WM_CREATE:
         {
-            std::vector<std::string> fileNames = { "triangle.txt", "square.txt" }; // Массив путей к файлам
+            std::vector<std::string> fileNames = { 
+                /*
+                */ 
+                "triangle.txt", 
+                "square.txt",
+                "turtle.txt",
+                "dove.txt",
+                "moth.txt",
+            }; 
             
             hdc = GetDC(hWnd);
             for (const std::string& fileName : fileNames)
@@ -113,31 +121,35 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             
             Vector2D O = model->getOXOYVector();
 
+            double step = 20;
+            double alpha = 10;
+            double scale = 1.5;
+
             switch (wp)
             {
                 case 'W':
-                    model->applyTransformation(Translation(0, -50));
+                    model->applyTransformation(Translation(0, -step));
                     break;
                 case 'A':
-                    model->applyTransformation(Translation(-50, 0));
+                    model->applyTransformation(Translation(-step, 0));
             
                     break;
                 case 'S':
-                    model->applyTransformation(Translation(0, 50));
+                    model->applyTransformation(Translation(0, step));
             
                     break;
                 case 'D':
-                    model->applyTransformation(Translation(50, 0));
+                    model->applyTransformation(Translation(step, 0));
                     break;
                 case 'Z':
                 {
-                    model->applyTransformation(Scaling(0.5, 0.5) * Translation(O.x(), O.y()));
+                    model->applyTransformation(Scaling((1/scale), (1/scale)) * Translation(O.x(), O.y()));
                     model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'X':
                 {   
-                    model->applyTransformation(Scaling(2, 2) * Translation(O.x(), O.y()));
+                    model->applyTransformation(Scaling(scale, scale) * Translation(O.x(), O.y()));
                     model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
@@ -155,13 +167,13 @@ LRESULT CALLBACK windowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 }
                 case 'Q':
                 {
-                    model->applyTransformation(Rotation(-10)* Translation(O.x(), O.y()));
+                    model->applyTransformation(Rotation(-alpha)* Translation(O.x(), O.y()));
                     model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }
                 case 'E':
                 {
-                    model->applyTransformation(Rotation(10)* Translation(O.x(), O.y()));
+                    model->applyTransformation(Rotation(alpha)* Translation(O.x(), O.y()));
                     model->applyTransformation(Translation(-O.x(), -O.y()));
                     break;
                 }

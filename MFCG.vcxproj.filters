@@ -55,5 +55,17 @@
     <Text Include="triangle.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="turtle.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dove.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="moth.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="square.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

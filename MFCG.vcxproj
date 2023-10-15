@@ -34,6 +34,9 @@
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="moth.txt" />
+    <Text Include="turtle.txt" />
+    <Text Include="dove.txt" />
     <Text Include="square.txt" />
     <Text Include="triangle.txt" />
   </ItemGroup>

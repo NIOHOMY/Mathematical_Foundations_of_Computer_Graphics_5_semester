@@ -76,7 +76,7 @@ void Model2D::draw(const HDC& hdc)
             transformedVertices[i].setY(m_modelMatrix(i + 1, 2));
         }
         // Отрисовать модель на экране
-        HPEN hPen = CreatePen(PS_DOT, 1, RGB(255, 0, 0));
+        HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
         HGDIOBJ hOldPen = SelectObject(hdc, hPen);
         for (int i = 0; i < m_indices.size() - 1; i++) {
             MoveToEx(hdc, transformedVertices[m_indices[i]].x(), transformedVertices[m_indices[i]].y(), nullptr);

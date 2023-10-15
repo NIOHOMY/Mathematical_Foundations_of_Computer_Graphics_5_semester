@@ -26,7 +26,6 @@ std::vector<int> Loader::indices() const
 
 bool Loader::isLoad()
 {
-    // Открываем файл для чтения.
     std::ifstream file(m_path);
     if (!file.is_open()) {
         return false;
