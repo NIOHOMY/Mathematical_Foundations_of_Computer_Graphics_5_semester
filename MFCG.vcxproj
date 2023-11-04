@@ -19,19 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Loader.cpp" />
-    <ClCompile Include="Model2D.cpp" />
-    <ClCompile Include="Render2D.cpp" />
+    <ClCompile Include="glad.c" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AffineTransform.h" />
-    <ClInclude Include="Loader.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Model2D.h" />
-    <ClInclude Include="Render2D.h" />
-    <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="dependencies\include\glad\glad.h" />
+    <ClInclude Include="dependencies\include\GLFW\glfw3.h" />
+    <ClInclude Include="dependencies\include\GLFW\glfw3native.h" />
+    <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -119,10 +114,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\N1o\0projects\VS\Cpp\MFCG\dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\N1o\0projects\VS\Cpp\MFCG\dependencies\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;/NODEFAULTLIB:MSVCRT;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
