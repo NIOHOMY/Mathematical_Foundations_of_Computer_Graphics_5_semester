@@ -82,6 +82,80 @@ void triang()
     // update other events like input handling 
 }
 
+void drawGradientSquare()
+{
+    GLuint vbo = 0;
+    GLuint vao = 0;
+    float points[] = {
+       -0.5f,  0.5f,  0.0f, 0.0f, 0.0f, 0.0f,
+        0.5f,  0.5f,  0.0f, 0.5f, 0.0f, 0.5f,
+       -0.5f, -0.5f,  0.0f, 1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.0f, 0.0f, 0.0f, 1.0f,
+    };
+
+    GLuint indices[] = {
+        0, 1, 2,  
+        1, 3, 2   
+    };
+
+    const char* vertex_shader =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 aColor;\n"
+        "out vec3 ourColor;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos, 1.0);\n"
+        "   ourColor = aColor;\n"
+        "}\0";
+
+    const char* fragment_shader =
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "in vec3 ourColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(ourColor, 1.0f);\n"
+        "}\n\0";
+
+    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint shader_programme = glCreateProgram();
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glShaderSource(vs, 1, &vertex_shader, NULL);
+    glCompileShader(vs);
+
+    glShaderSource(fs, 1, &fragment_shader, NULL);
+    glCompileShader(fs);
+
+    glAttachShader(shader_programme, fs);
+    glAttachShader(shader_programme, vs);
+    glLinkProgram(shader_programme);
+
+    glUseProgram(shader_programme);
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+
+
 // Когда пользователь меняет размер окна, окно просмотра также должно быть скорректировано, требуя функцию обратного вызова
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     // Первые два параметра функции glViewport управляют положением нижнего левого угла окна, а третий и четвертый параметры контролируют ширину и высоту окна рендеринга
@@ -112,7 +186,7 @@ int main(int argc, char** argv)
 //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
      // Создать объект окна
-    GLFWwindow* window = glfwCreateWindow(800, 600, "GLFW + GLAD", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(900, 700, "GLFW + GLAD", NULL, NULL);
     if (window == NULL) {
         cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -143,7 +217,8 @@ int main(int argc, char** argv)
         // Функция glClear - это функция использования состояния, которая использует текущее состояние для очистки экрана с указанным цветом
         glClear(GL_COLOR_BUFFER_BIT);
         //triang(); - запускаем отрисовку треугольника. Работает именно в этом месте!
-        triang();
+        //triang();
+        drawGradientSquare();
         // Функция glfwSwapBuffers будет обмениваться цветовыми буферами
         glfwSwapBuffers(window);
         // Функция glfwPollEvents проверяет, запущены ли какие-либо события
