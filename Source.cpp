@@ -73,13 +73,8 @@ void drawGradientSquare()
     glBindVertexArray(vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-    // bind shader (glUseProgrm)
-    // bind vao vbo
-    // bind ebo
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    // release ebo
-    // release vao vbo
-    // release shader
+    
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
