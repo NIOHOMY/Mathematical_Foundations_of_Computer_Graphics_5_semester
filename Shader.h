@@ -53,14 +53,40 @@ Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentS
 
         linkShaders(vertexShader, fragmentShader);
 
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+       /* glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);*/
+
+
+
+        GLint success;
+        GLchar infoLog[512];
+
+        
+        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+            std::cout << "Vertex shader compilation failed:\n" << infoLog << std::endl;
+        }
+
+        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+            std::cout << "Fragment shader compilation failed:\n" << infoLog << std::endl;
+        }
+
+        glGetProgramiv(m_shaderId, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(m_shaderId, 512, NULL, infoLog);
+            std::cout << "Shader program linking failed:\n" << infoLog << std::endl;
+        }
+
     }
     catch (const std::runtime_error& e)
     {
-        // Handle the exception here
-        std::cerr << "Exception caught: " << e.what() << std::endl;
-        // You might want to throw another exception or take appropriate action
+        std::cerr << ": " << e.what() << std::endl;
     }
 }
 
@@ -82,27 +108,37 @@ void Shader::release() const
 
 void Shader::setInt(const std::string& name, int value)
 {
+    glUseProgram(m_shaderId);
     glUniform1i(glGetUniformLocation(m_shaderId, name.c_str()), value);
+    glUseProgram(0);
 }
 
 void Shader::setFloat(const std::string& name, float value)
 {
+    glUseProgram(m_shaderId);
     glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
+    glUseProgram(0);
 }
 
 void Shader::setVec2(const std::string& name, const glm::vec2& value)
 {
+    glUseProgram(m_shaderId);
     glUniform2fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, glm::value_ptr(value));
+    glUseProgram(0);
 }
 
 void Shader::setVec3(const std::string& name, const glm::vec3& value)
 {
+    glUseProgram(m_shaderId);
     glUniform3fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, glm::value_ptr(value));
+    glUseProgram(0);
 }
 
 void Shader::setVec4(const std::string& name, const glm::vec4& value)
 {
+    glUseProgram(m_shaderId);
     glUniform4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, glm::value_ptr(value));
+    glUseProgram(0);
 }
 
 std::string Shader::readShaderFile(const std::string& filePath)
@@ -115,7 +151,7 @@ std::string Shader::readShaderFile(const std::string& filePath)
 
     std::stringstream shaderStream;
     shaderStream << shaderFile.rdbuf();
-    shaderFile.close();  // Important: Close the file after reading
+    shaderFile.close();  
     return shaderStream.str();
 }
 
@@ -138,7 +174,6 @@ unsigned int Shader::compileShader(const std::string& source, GLenum shaderType)
         GLchar infoLog[512];
         glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
 
-        // Print shader source and compilation error
         std::cerr << "Shader compilation error for type " << (shaderType == GL_VERTEX_SHADER ? "vertex" : "fragment") << ":\n"
             << "Shader source:\n"
             << source << "\n"

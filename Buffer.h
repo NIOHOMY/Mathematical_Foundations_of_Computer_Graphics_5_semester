@@ -28,13 +28,13 @@ public:
 
     void allocate(const void* data, size_t size)
     {
-        GLint currentBuffer;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &currentBuffer);
+        GLint previousBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_id);
         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
     }
 
 
@@ -51,6 +51,18 @@ public:
     void destroy()
     {
         glDeleteBuffers(1, &m_id);
+    }
+    void setupVertexAttributes()
+    {
+        bind();
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+        release();
     }
 
 private:
@@ -69,13 +81,13 @@ public:
 
     void allocate(const void* data, size_t size)
     {
-        GLint currentBuffer;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &currentBuffer);
+        GLint previousBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_id);
-        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
     }
 
 
