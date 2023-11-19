@@ -237,19 +237,7 @@ void drawGradientSquare( Shader& shader,  VertexBuffer& vbo,  IndexBuffer& ibo)
     vbo.bind();
     ibo.bind();
 
-    // Set up vertex attributes (assuming position and color attributes)
-    glEnableVertexAttribArray(0); // attribute 0 (position)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(1); // attribute 1 (color)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-
-    // Draw the square
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    // Cleanup
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
 
     vbo.release();
     ibo.release();
@@ -295,7 +283,6 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Create and compile shaders
-    Shader shader(vertex_shader, fragment_shader);
 
     // Define vertices and indices for a square
     float vertices[] = {
@@ -320,6 +307,14 @@ int main()
     ibo.create();
     ibo.allocate(indices, sizeof(indices));
 
+    glEnableVertexAttribArray(0); // attribute 0 (position)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(1); // attribute 1 (color)
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    Shader shader(vertex_shader, fragment_shader);
+    shader.bind();
     // Rendering loop
     while (!glfwWindowShouldClose(window))
     {

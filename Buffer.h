@@ -16,110 +16,84 @@ public:
     virtual void allocate(void* data, uint32_t size) = 0;
 };
 
-class VertexBuffer : public Buffer
+class VertexBuffer
 {
 public:
-    VertexBuffer();
-    ~VertexBuffer() override;
+    VertexBuffer() : m_id(0) {}
 
-    void create() override;
-    void destroy() override;
+    void create()
+    {
+        glGenBuffers(1, &m_id);
+    }
 
-    void bind() override;
-    void release() override;
+    void allocate(const void* data, size_t size)
+    {
+        GLint currentBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &currentBuffer);
 
-    void allocate(void* data, uint32_t size) override;
+        glBindBuffer(GL_ARRAY_BUFFER, m_id);
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+    }
+
+
+    void bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_id);
+    }
+
+    void release()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void destroy()
+    {
+        glDeleteBuffers(1, &m_id);
+    }
 
 private:
-    GLuint m_vbo;
+    unsigned int m_id;
 };
 
-VertexBuffer::VertexBuffer() : m_vbo(0) {}
-
-VertexBuffer::~VertexBuffer()
-{
-    destroy();
-}
-
-void VertexBuffer::create()
-{
-    glGenBuffers(1, &m_vbo);
-}
-
-void VertexBuffer::destroy()
-{
-    if (m_vbo != 0)
-    {
-        glDeleteBuffers(1, &m_vbo);
-        m_vbo = 0;
-    }
-}
-
-void VertexBuffer::bind()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-}
-
-void VertexBuffer::release()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VertexBuffer::allocate(void* data, uint32_t size)
-{
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-}
-
-class IndexBuffer : public Buffer
+class IndexBuffer
 {
 public:
-    IndexBuffer();
-    ~IndexBuffer() override;
+    IndexBuffer() : m_id(0) {}
 
-    void create() override;
-    void destroy() override;
+    void create()
+    {
+        glGenBuffers(1, &m_id);
+    }
 
-    void bind() override;
-    void release() override;
+    void allocate(const void* data, size_t size)
+    {
+        GLint currentBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &currentBuffer);
 
-    void allocate(void* data, uint32_t size) override;
+        glBindBuffer(GL_ARRAY_BUFFER, m_id);
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+    }
+
+
+    void bind()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
+    }
+
+    void release()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    void destroy()
+    {
+        glDeleteBuffers(1, &m_id);
+    }
 
 private:
-    GLuint m_ebo;
+    unsigned int m_id;
 };
-
-IndexBuffer::IndexBuffer() : m_ebo(0) {}
-
-IndexBuffer::~IndexBuffer()
-{
-    destroy();
-}
-
-void IndexBuffer::create()
-{
-    glGenBuffers(1, &m_ebo);
-}
-
-void IndexBuffer::destroy()
-{
-    if (m_ebo != 0)
-    {
-        glDeleteBuffers(1, &m_ebo);
-        m_ebo = 0;
-    }
-}
-
-void IndexBuffer::bind()
-{
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-}
-
-void IndexBuffer::release()
-{
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void IndexBuffer::allocate(void* data, uint32_t size)
-{
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-}
