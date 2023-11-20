@@ -44,8 +44,8 @@ void Shader::createByShaders(const std::string& vertexShaderPath, const std::str
 {
     try
     {
-        std::string vertexShaderSource = vertexShaderPath;//readShaderFile(vertexShaderPath);
-        std::string fragmentShaderSource = fragmentShaderPath;//readShaderFile(fragmentShaderPath);
+        std::string vertexShaderSource = /*vertexShaderPath; */ readShaderFile(vertexShaderPath);
+        std::string fragmentShaderSource =/* fragmentShaderPath;//*/readShaderFile(fragmentShaderPath);
 
         unsigned int vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
         unsigned int fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -58,11 +58,6 @@ void Shader::createByShaders(const std::string& vertexShaderPath, const std::str
         }
 
         linkShaders(vertexShader, fragmentShader);
-
-        /* glDeleteShader(vertexShader);
-         glDeleteShader(fragmentShader);*/
-
-
 
         GLint success;
         GLchar infoLog[512];

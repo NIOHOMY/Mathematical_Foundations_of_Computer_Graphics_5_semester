@@ -35,5 +35,22 @@
     <ClInclude Include="dependencies\include\KHR\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="fsh.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="vsh.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -468,7 +468,7 @@ int main(int argc, char** argv)
     ebo.create();
     ebo.bind();
 
-    sh.createByShaders(vertex_shader, fragment_shader);
+    sh.createByShaders("vsh.txt", "fsh.txt"/*vertex_shader, fragment_shader*/);
 
     vb.allocate(points, sizeof(points));
 
