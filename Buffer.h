@@ -19,40 +19,43 @@ public:
 class VertexBuffer
 {
 public:
-    VertexBuffer() : m_id(0) {}
+    VertexBuffer() : m_id_vbo(0), m_id_vao(0) {}
 
     void create()
     {
-        glGenBuffers(1, &m_id);
+        glGenBuffers(1, &m_id_vbo);
+        glGenVertexArrays(1, &m_id_vao);
     }
 
     void allocate(const void* data, size_t size)
     {
-        GLint previousBuffer;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);
+        /*GLint previousBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);*/
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_id);
         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
+        //glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
     }
 
 
     void bind()
     {
-        glBindBuffer(GL_ARRAY_BUFFER, m_id);
+        glBindBuffer(GL_ARRAY_BUFFER, m_id_vbo);
+        glBindVertexArray(m_id_vao);
     }
 
     void release()
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
 
     void destroy()
     {
-        glDeleteBuffers(1, &m_id);
+        glDeleteBuffers(1, &m_id_vbo);
+        glDeleteBuffers(1, &m_id_vao);
     }
-    void setupVertexAttributes()
+   /* void setupVertexAttributes()
     {
         bind();
 
@@ -63,10 +66,11 @@ public:
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
         release();
-    }
+    }*/
 
 private:
-    unsigned int m_id;
+    unsigned int m_id_vbo;
+    unsigned int m_id_vao;
 };
 
 class IndexBuffer
@@ -81,13 +85,12 @@ public:
 
     void allocate(const void* data, size_t size)
     {
-        GLint previousBuffer;
-        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);
+        /*GLint previousBuffer;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &previousBuffer);*/
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
+        //glBindBuffer(GL_ARRAY_BUFFER, previousBuffer);
     }
 
 
