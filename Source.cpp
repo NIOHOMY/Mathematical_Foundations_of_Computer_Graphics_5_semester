@@ -164,17 +164,15 @@ void processInput(GLFWwindow* window) {
 //    return 0;
 //}
 
-GLModel glModel;
 
-void render() {
 
-    glModel.bind();
-
-    glDrawArrays(GL_TRIANGLES, 0, glModel.nVertices());
-
-    glModel.release();
-
-}
+//void render() {
+//
+//    model.bind();
+//    glDrawElements(GL_TRIANGLES, model.nVertices(), GL_UNSIGNED_INT, 0);
+//    model.release();
+//
+//}
 int main() {
     glfwInit();
 
@@ -198,25 +196,36 @@ int main() {
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    ModelLoader modelLoader;
-    if (!modelLoader.isLoad("obj.txt")) {
-        // Обработка ошибки загрузки модели
-        return -1;
-    }
-
-    glModel.setVertices(modelLoader.getVertices());
-    glModel.setTextureCoords(modelLoader.getTextureCoords());
-    glModel.setNormals(modelLoader.getNormals());
-
     
-    while (!glfwWindowShouldClose(window)) {
-        processInput(window);
-        glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        render();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+    ModelLoader loader;
+    if (loader.isLoad("obj.txt")) {
+        GLModel model;
+        model.loadModel("obj.txt");
+
+        glEnable(GL_DEPTH_TEST);
+
+        while (!glfwWindowShouldClose(window)) {
+            processInput(window);
+            glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+
+            model.bind();
+            glDrawElements(GL_TRIANGLES, model.nVertices(), GL_UNSIGNED_INT, 0);
+            model.release();
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+    }
+    else {
+        std::cout << "Failed to load model" << std::endl;
     }
 
+    glfwTerminate();
     return 0;
 }
