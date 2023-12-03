@@ -36,6 +36,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="shader.frag.txt" />
+    <None Include="shader.vert.txt" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="fsh.txt" />

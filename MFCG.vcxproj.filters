@@ -62,6 +62,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="shader.vert.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shader.frag.txt">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fsh.txt">

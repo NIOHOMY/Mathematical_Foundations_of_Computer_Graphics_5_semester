@@ -27,7 +27,12 @@ public:
     void setVec4(const std::string& name, const glm::vec4& value);
 
     void createByShaders(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    void setMat4(const std::string& name, const glm::mat4& mat);
 
+    unsigned int get()
+    {
+        return m_shaderId;
+    }
 private:
     unsigned int m_shaderId;
 
@@ -199,3 +204,8 @@ void Shader::linkShaders(unsigned int vertexShader, unsigned int fragmentShader)
         m_shaderId = 0;
     }
 }
+
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) {
+    glUniformMatrix4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+

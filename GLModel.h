@@ -131,17 +131,17 @@ public:
 class GLModel : public DrawableObject {
 public:
     GLModel()
-        : vao_(0)
+        :/* vao_(0)
         , vboVertices_(0)
         , vboTextureCoords_(0)
         , vboNormals_(0)
         , ebo_(0)
-        , nVertices_(0)
+        , */nVertices_(0)
     {
     }
 
     virtual void bind() override {
-        glBindVertexArray(vao_);
+        glBindVertexArray(/*vao_*/0);
     }
 
     virtual void release() override {
@@ -158,10 +158,7 @@ public:
             return false;
         }
         ModelLoader modelLoader;
-        std::vector<glm::vec3> vertices;
-        std::vector<glm::vec2> textureCoords;
-        std::vector<glm::vec3> normals;
-        std::vector<unsigned int> indices;
+        
 
         std::string line;
         while (std::getline(file, line)) {
@@ -214,7 +211,7 @@ public:
         }
 
         nVertices_ = indices.size() / 3;
-
+        /*
         glGenVertexArrays(1, &vao_);
         glGenBuffers(1, &vboVertices_);
         glGenBuffers(1, &vboTextureCoords_);
@@ -242,15 +239,38 @@ public:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
         glBindVertexArray(0);
+        */
 
         return true;
     }
-
+    std::vector<glm::vec3> getVertices() {
+        return vertices;
+    }
+    std::vector<glm::vec2> getTextureCoords() {
+        return textureCoords;
+    }
+    std::vector<glm::vec3> getNormals() {
+        return normals;
+    }
+    std::vector<unsigned int> getIndices() {
+        return indices;
+    }
+    /*unsigned int getVboTextureCoords() {
+        return vboTextureCoords_;
+    }
+    unsigned int getVboNormals() {
+        return vboNormals_;
+    }*/
 private:
-    unsigned int vao_;
+    /*unsigned int vao_;
     unsigned int vboVertices_;
     unsigned int vboTextureCoords_;
     unsigned int vboNormals_;
-    unsigned int ebo_;
+    unsigned int ebo_;*/
     int nVertices_;
+
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> textureCoords;
+    std::vector<glm::vec3> normals;
+    std::vector<unsigned int> indices;
 };
