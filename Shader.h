@@ -51,7 +51,7 @@ void Shader::createByShaders(const std::string& vertexShaderPath, const std::str
     {
         std::string vertexShaderSource = /*vertexShaderPath; */ readShaderFile(vertexShaderPath);
         std::string fragmentShaderSource =/* fragmentShaderPath;//*/readShaderFile(fragmentShaderPath);
-
+        
         unsigned int vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
         unsigned int fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
 
@@ -61,6 +61,10 @@ void Shader::createByShaders(const std::string& vertexShaderPath, const std::str
             // You might want to throw another exception or take appropriate action
             return;
         }
+
+        glBindAttribLocation(m_shaderId, 0, "position");
+        glBindAttribLocation(m_shaderId, 1, "texCoord");
+        glBindAttribLocation(m_shaderId, 2, "normal");
 
         linkShaders(vertexShader, fragmentShader);
 

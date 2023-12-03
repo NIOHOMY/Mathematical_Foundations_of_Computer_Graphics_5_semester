@@ -71,6 +71,7 @@ int main()
     ebo.bind();
 
     Shader sh;
+
     sh.createByShaders("shader.vert.txt", "shader.frag.txt");
 
     GLModel c_model;
