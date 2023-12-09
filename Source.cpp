@@ -1,19 +1,38 @@
 ﻿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
-#include "Shader.h"
-#include "ModelLoader.h"
-#include "GLModel.h"
 
-void processInput(GLFWwindow* window)
+const char* vertexShaderSource = R"(
+    #version 330 core
+    layout (location = 0) in vec3 aPos;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main()
+    {
+        gl_Position = projection * view * model * vec4(aPos, 1.0);
+    }
+)";
+
+const char* fragmentShaderSource = R"(
+    #version 330 core
+    out vec4 FragColor;
+
+    void main()
+    {
+        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    }
+)";
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    glViewport(0, 0, width, height);
 }
-
 
 int main()
 {
@@ -22,10 +41,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Camera", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Cube", nullptr, nullptr);
     if (window == nullptr)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -33,94 +51,132 @@ int main()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
-    std::vector<float> vertices = {
-         1.0f, 1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 1.0f,
-         -1.0f, 1.0f, -1.0f,
-         -1.0f, -1.0f, -1.0f,
-         -1.0f, 1.0f, 1.0f,
-         -1.0f, -1.0f, 1.0f
+    glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Compile vertex shader
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glCompileShader(vertexShader);
+
+    // Compile fragment shader
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glCompileShader(fragmentShader);
+
+    // Link shaders
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Define cube vertices and indices
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f
     };
 
-    std::vector<unsigned int> indices = {
-        
-        4,0,0, 2,1,0, 0,2,0,
-        2,1,1, 7,3,1, 3,4,1,
-        6,5,2, 5,6,2, 7,7,2,
-        1,8,3, 7,9,3, 5,10,3,
-        0,2,4, 3,4,4, 1,8,4,
-        4,11,5, 1,8,5, 5,6,5,
-        4,0,0, 6,12,0, 2,1,0,
-        2,1,1, 6,13,1, 7,3,1,
-        6,5,2, 4,11,2, 5,6,2,
-        1,8,3, 3,4,3, 7,9,3,
-        0,2,4, 2,1,4, 3,4,4,
-        4,11,5, 0,2,5, 1,8,5
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0,
+        4, 5, 6,
+        6, 7, 4,
+        0, 3, 7,
+        7, 4, 0,
+        1, 2, 6,
+        6, 5, 1,
+        2, 3, 7,
+        7, 6, 2,
+        0, 1, 5,
+        5, 4, 0
     };
 
-    
-    
+    // Create VAO, VBO, and EBO
+    unsigned int VAO, VBO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    Shader sh;
+    // Bind VAO
+    glBindVertexArray(VAO);
 
-    sh.createByShaders("shader.vert.txt", "shader.frag.txt");
+    // Bind VBO and copy vertices data
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    ModelLoader modelLoader;
-    modelLoader.loadModel("obj.txt");
-    GLModel c_model(modelLoader.getVertices(), modelLoader.getTextureCoords(), modelLoader.getNormals(), modelLoader.getIndices());
+    // Bind EBO and copy indices data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+    // Set vertex attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
-    int i = -5;
+    // Unbind VAO, VBO, and EBO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+    // Enable depth testing
     glEnable(GL_DEPTH_TEST);
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+
+    // Render loop
     while (!glfwWindowShouldClose(window))
     {
-        /*if (i==5)
-        {
-            i = -5;
-        }*/
-        processInput(window);
-
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        sh.bind();
 
-        
-        glm::mat4 projection = glm::perspective(glm::radians(75.f), (float)width / (float)height, 0.1f, 100.0f);
-        unsigned int projectionLoc = glGetUniformLocation(sh.get(), "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        // Use shader program
+        glUseProgram(shaderProgram);
 
-        
-        glm::mat4 view = glm::lookAt(glm::vec3(3.0f, -3.0f/*(float)i*/, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        unsigned int viewLoc = glGetUniformLocation(sh.get(), "view");
+        // Set view matrix (move the camera back along the z-axis)
+        glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, 3.0f),  // camera position
+            glm::vec3(0.0f, 0.0f, 0.0f),  // look at origin
+            glm::vec3(0.0f, 1.0f, 0.0f)); // up vector
+
+        unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
+        // Set model, view, and projection matrices (for simplicity, use identity matrices)
+        glm::mat4 model = glm::mat4(1.0f);
+        //glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        c_model.bind();
-        glDrawElements(GL_TRIANGLES, c_model.nVertices(), GL_UNSIGNED_INT, 0);
-        c_model.release();
-        
+        unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+        //unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+        unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        // Draw cube
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        // Swap buffers and poll events
         glfwSwapBuffers(window);
         glfwPollEvents();
-        //i++;
     }
 
-    
-    
-   
-    sh.release();
+    // Cleanup
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;
-
 }
