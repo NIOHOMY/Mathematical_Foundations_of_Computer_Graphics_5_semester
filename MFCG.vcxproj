@@ -33,6 +33,7 @@
     <ClInclude Include="GLModel.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -42,6 +43,7 @@
   <ItemGroup>
     <Text Include="fsh.txt" />
     <Text Include="obj.txt" />
+    <Text Include="obj2.txt" />
     <Text Include="vsh.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

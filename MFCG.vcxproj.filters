@@ -59,6 +59,9 @@
     <ClInclude Include="GLModel.h">
       <Filter>Source Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -77,6 +80,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="obj.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="obj2.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

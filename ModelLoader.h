@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <glm/glm.hpp>
+#include "Vertex.h"
 
 //class ModelLoader {
 //public:
@@ -144,7 +145,89 @@ public:
         return file.good();
     }
 
-    bool parseVertices(const std::string& strVertex, glm::vec3& vertex) {
+    bool loadModel(const std::string& path) {
+        std::ifstream file(path);
+        if (!file.good()) {
+            return false;
+        }
+
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.find("v ") == 0) {
+                float vertex[3];
+                if (!parseVertices(line.substr(2), vertex)) {
+                    return false;
+                }
+                vertices.push_back(vertex[0]);
+                vertices.push_back(vertex[1]);
+                vertices.push_back(vertex[2]);
+            }
+            else if (line.find("vt ") == 0) {
+                float textureCoordinate[2];
+                if (!parseTextureCoords(line.substr(3), textureCoordinate)) {
+                    return false;
+                }
+                textureCoords.push_back(textureCoordinate[0]);
+                textureCoords.push_back(textureCoordinate[1]);
+            }
+            else if (line.find("vn ") == 0) {
+                float normal[3];
+                if (!parseNormal(line.substr(3), normal)) {
+                    return false;
+                }
+                normals.push_back(normal[0]);
+                normals.push_back(normal[1]);
+                normals.push_back(normal[2]);
+            }
+            else if (line.find("f ") == 0) {
+                std::stringstream ss(line.substr(2));
+                std::string s;
+                while (std::getline(ss, s, ' ')) {
+                    if (!s.empty()) {
+                        std::stringstream ssIndex(s);
+                        std::string sIndex;
+                        std::vector<std::string> tokensIndex;
+                        while (std::getline(ssIndex, sIndex, '/')) {
+                            if (!sIndex.empty()) {
+                                tokensIndex.push_back(sIndex);
+                            }
+                        }
+                        if (tokensIndex.size() != 3) {
+                            return false;
+                        }
+                        unsigned int indexVertex = std::stoi(tokensIndex[0]) - 1;
+                        unsigned int indexTextureCoord = std::stoi(tokensIndex[1]) - 1;
+                        unsigned int indexNormal = std::stoi(tokensIndex[2]) - 1;
+                        indices.push_back(indexVertex);
+                        indices.push_back(indexTextureCoord);
+                        indices.push_back(indexNormal);
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    std::vector<float> getVertices() {
+        return vertices;
+    }
+
+    std::vector<float> getTextureCoords() {
+        return textureCoords;
+    }
+
+    std::vector<float> getNormals() {
+        return normals;
+    }
+
+    std::vector<unsigned int> getIndices() {
+        return indices;
+    }
+
+
+private:
+    bool parseVertices(const std::string& strVertex, float* vertex) {
         std::stringstream ss(strVertex);
         std::string s;
         std::vector<std::string> tokens;
@@ -156,13 +239,13 @@ public:
         if (tokens.size() != 3) {
             return false;
         }
-        vertex.x = std::stof(tokens[0]);
-        vertex.y = std::stof(tokens[1]);
-        vertex.z = std::stof(tokens[2]);
+        vertex[0] = std::stof(tokens[0]);
+        vertex[1] = std::stof(tokens[1]);
+        vertex[2] = std::stof(tokens[2]);
         return true;
     }
 
-    bool parseTextureCoords(const std::string& strTextureCoordinate, glm::vec2& textureCoordinate) {
+    bool parseTextureCoords(const std::string& strTextureCoordinate, float* textureCoordinate) {
         std::stringstream ss(strTextureCoordinate);
         std::string s;
         std::vector<std::string> tokens;
@@ -174,12 +257,12 @@ public:
         if (tokens.size() != 2) {
             return false;
         }
-        textureCoordinate.x = std::stof(tokens[0]);
-        textureCoordinate.y = std::stof(tokens[1]);
+        textureCoordinate[0] = std::stof(tokens[0]);
+        textureCoordinate[1] = std::stof(tokens[1]);
         return true;
     }
 
-    bool parseNormal(const std::string& strNormal, glm::vec3& normal) {
+    bool parseNormal(const std::string& strNormal, float* normal) {
         std::stringstream ss(strNormal);
         std::string s;
         std::vector<std::string> tokens;
@@ -191,10 +274,16 @@ public:
         if (tokens.size() != 3) {
             return false;
         }
-        normal.x = std::stof(tokens[0]);
-        normal.y = std::stof(tokens[1]);
-        normal.z = std::stof(tokens[2]);
+        normal[0] = std::stof(tokens[0]);
+        normal[1] = std::stof(tokens[1]);
+        normal[2] = std::stof(tokens[2]);
         return true;
     }
+
+    std::vector<float> vertices;
+    std::vector<float> textureCoords;
+    std::vector<float> normals;
+    std::vector<unsigned int> indices;
 };
+
 

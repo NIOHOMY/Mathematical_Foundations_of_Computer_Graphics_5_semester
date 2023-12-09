@@ -6,7 +6,9 @@
 #include <glm/vec2.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include "ModelLoader.h"
+#include "Buffer.h"
+#include "GLModel.h"
+#include "Vertex.h"
 
 class DrawableObject
 {
@@ -128,149 +130,85 @@ public:
 //    int countTriangles;
 //};
 
+
+
 class GLModel : public DrawableObject {
 public:
-    GLModel()
-        :/* vao_(0)
-        , vboVertices_(0)
-        , vboTextureCoords_(0)
-        , vboNormals_(0)
-        , ebo_(0)
-        , */nVertices_(0)
+    GLModel(std::vector<float> vertices,
+    std::vector<float> textureCoords,
+    std::vector<float> normals,
+    std::vector<unsigned int> indices)
     {
-    }
 
+        nVertices_ = indices.size()/3;
+        
+        int i = 0;
+        while (i < indices.size())
+        {
+            Vertex new_v;
+            _indices.push_back(indices[i]);
+            new_v.vertex[0] = vertices[indices[i] * 3];
+            new_v.vertex[1] = vertices[indices[i] * 3 + 1];
+            new_v.vertex[2] = vertices[indices[i] * 3 + 2];
+            new_v.texture[0] = textureCoords[indices[i + 1] * 2];
+            new_v.texture[1] = textureCoords[indices[i + 1] * 2+1];
+            new_v.normal[0] = normals[indices[i + 2] * 3];
+            new_v.normal[1] = normals[indices[i + 2] * 3 + 1];
+            new_v.normal[2] = normals[indices[i + 2] * 3 + 2];
+            i += 3;
+            Model.push_back(new_v);
+        }
+
+
+        vb.create();
+        vb.bind();
+        ebo.create();
+        vb.allocate(Model.data(), Model.size() * sizeof(Vertex));
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, vertex));
+        
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture));
+        
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
+
+        vb.release();
+        
+        ebo.bind();
+        ebo.allocate(_indices.data(), _indices.size() * sizeof(unsigned int));
+
+        ebo.release();
+
+    }
+    virtual int nVertices() {
+        return nVertices_;
+    }
     virtual void bind() override {
-        glBindVertexArray(/*vao_*/0);
+        vb.bind();
+        ebo.bind();
     }
 
     virtual void release() override {
-        glBindVertexArray(0);
+        vb.release();
+        ebo.release();
     }
 
-    virtual int nVertices() override {
-        return nVertices_;
+    void destroy()
+    {
+        vb.release();
+        ebo.release();
     }
-
-    bool loadModel(const std::string& path) {
-        std::ifstream file(path);
-        if (!file.good()) {
-            return false;
-        }
-        ModelLoader modelLoader;
-        
-
-        std::string line;
-        while (std::getline(file, line)) {
-            if (line.find("v ") == 0) {
-                glm::vec3 vertex;
-                if (!modelLoader.parseVertices(line.substr(2), vertex)) {
-                    return false;
-                }
-                vertices.push_back(vertex);
-            }
-            else if (line.find("vt ") == 0) {
-                glm::vec2 textureCoordinate;
-                if (!modelLoader.parseTextureCoords(line.substr(3), textureCoordinate)) {
-                    return false;
-                }
-                textureCoords.push_back(textureCoordinate);
-            }
-            else if (line.find("vn ") == 0) {
-                glm::vec3 normal;
-                if (!modelLoader.parseNormal(line.substr(3), normal)) {
-                    return false;
-                }
-                normals.push_back(normal);
-            }
-            else if (line.find("f ") == 0) {
-                std::stringstream ss(line.substr(2));
-                std::string s;
-                while (std::getline(ss, s, ' ')) {
-                    if (!s.empty()) {
-                        std::stringstream ssIndex(s);
-                        std::string sIndex;
-                        std::vector<std::string> tokensIndex;
-                        while (std::getline(ssIndex, sIndex, '/')) {
-                            if (!sIndex.empty()) {
-                                tokensIndex.push_back(sIndex);
-                            }
-                        }
-                        if (tokensIndex.size() != 3) {
-                            return false;
-                        }
-                        unsigned int indexVertex = std::stoi(tokensIndex[0]) - 1;
-                        unsigned int indexTextureCoord = std::stoi(tokensIndex[1]) - 1;
-                        unsigned int indexNormal = std::stoi(tokensIndex[2]) - 1;
-                        indices.push_back(indexVertex);
-                        indices.push_back(indexTextureCoord);
-                        indices.push_back(indexNormal);
-                    }
-                }
-            }
-        }
-
-        nVertices_ = indices.size() / 3;
-        /*
-        glGenVertexArrays(1, &vao_);
-        glGenBuffers(1, &vboVertices_);
-        glGenBuffers(1, &vboTextureCoords_);
-        glGenBuffers(1, &vboNormals_);
-        glGenBuffers(1, &ebo_);
-
-        glBindVertexArray(vao_);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertices_);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboTextureCoords_);
-        glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(glm::vec2), textureCoords.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboNormals_);
-        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(2);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
-        glBindVertexArray(0);
-        */
-
-        return true;
-    }
-    std::vector<glm::vec3> getVertices() {
-        return vertices;
-    }
-    std::vector<glm::vec2> getTextureCoords() {
-        return textureCoords;
-    }
-    std::vector<glm::vec3> getNormals() {
-        return normals;
-    }
-    std::vector<unsigned int> getIndices() {
-        return indices;
-    }
-    /*unsigned int getVboTextureCoords() {
-        return vboTextureCoords_;
-    }
-    unsigned int getVboNormals() {
-        return vboNormals_;
-    }*/
 private:
-    /*unsigned int vao_;
-    unsigned int vboVertices_;
-    unsigned int vboTextureCoords_;
-    unsigned int vboNormals_;
-    unsigned int ebo_;*/
     int nVertices_;
+    VertexBuffer vb;
+    IndexBuffer ebo;
 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> textureCoords;
-    std::vector<glm::vec3> normals;
-    std::vector<unsigned int> indices;
+    std::vector<unsigned int> _indices;
+    std::vector<Vertex> Model;
 };
+
