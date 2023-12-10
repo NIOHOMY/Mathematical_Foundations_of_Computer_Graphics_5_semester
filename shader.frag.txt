@@ -1,7 +1,33 @@
 #version 330 core
+
+in vec2 TexCoord;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(0.5f, 0.8f, 0.8f, 1.0f);
+    FragColor = vec4(TexCoord, 0.0, 1.0);
+    /*
+    if (TexCoord.y >= 0.0 && TexCoord.y <= 0.1)
+        FragColor = vec4(1.0, 0.0, 0.0, 1.0); 
+    else if (TexCoord.y > 0.1 && TexCoord.y <= 0.2)
+        FragColor = vec4(1.0, 0.5, 0.0, 1.0); 
+    else if (TexCoord.y > 0.2 && TexCoord.y <= 0.3)
+        FragColor = vec4(1.0, 1.0, 0.0, 1.0); 
+    else if (TexCoord.y > 0.3 && TexCoord.y <= 0.4)
+        FragColor = vec4(0.0, 1.0, 0.0, 1.0); 
+    else if (TexCoord.y > 0.4 && TexCoord.y <= 0.5)
+        FragColor = vec4(0.0, 1.0, 1.0, 1.0); 
+    else if (TexCoord.y > 0.5 && TexCoord.y <= 0.6)
+        FragColor = vec4(0.0, 0.0, 1.0, 1.0); 
+    else if (TexCoord.y > 0.6 && TexCoord.y <= 0.7)
+        FragColor = vec4(0.5, 0.0, 1.0, 1.0); 
+    else if (TexCoord.y > 0.7 && TexCoord.y <= 0.8)
+        FragColor = vec4(1.0, 0.0, 1.0, 1.0); 
+    else if (TexCoord.y > 0.8 && TexCoord.y <= 0.9)
+        FragColor = vec4(1.0, 0.0, 0.5, 1.0); 
+    else if (TexCoord.y > 0.9 && TexCoord.y <= 1.0)
+        FragColor = vec4(1.0, 1.0, 1.0, 1.0); 
+    else
+        FragColor = vec4(0.0, 0.0, 0.0, 1.0); 
+    */
 }

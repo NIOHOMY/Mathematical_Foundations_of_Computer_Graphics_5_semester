@@ -62,7 +62,7 @@ int main()
 
             sh.bind();
 
-            glm::mat4 view = glm::lookAt(glm::vec3(1.0f, -3.0f, 3.0f),  // где камера
+            glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, -3.0f),  // где камера
                 glm::vec3(0.0f, 0.0f, 0.0f),  // ориг
                 glm::vec3(0.0f, 1.0f, 0.0f)); // наверх
 
