@@ -145,43 +145,40 @@ public:
         int i = 0;
         while (i < indices.size())
         {
-            Vertex new_v;
+            //Vertex new_v;
             _indices.push_back(indices[i]);
-            new_v.vertex[0] = vertices[indices[i] * 3];
-            new_v.vertex[1] = vertices[indices[i] * 3 + 1];
-            new_v.vertex[2] = vertices[indices[i] * 3 + 2];
-            new_v.texture[0] = textureCoords[indices[i + 1] * 2];
-            new_v.texture[1] = textureCoords[indices[i + 1] * 2+1];
-            new_v.normal[0] = normals[indices[i + 2] * 3];
-            new_v.normal[1] = normals[indices[i + 2] * 3 + 1];
-            new_v.normal[2] = normals[indices[i + 2] * 3 + 2];
+            Model.push_back( vertices[indices[i] * 3]);
+            Model.push_back(vertices[indices[i] * 3 + 1]);
+            Model.push_back(vertices[indices[i] * 3 + 2]);
+            /*Model.push_back(textureCoords[indices[i + 1] * 2]);
+            Model.push_back(textureCoords[indices[i + 1] * 2+1]);
+            Model.push_back(normals[indices[i + 2] * 3]);
+            Model.push_back(normals[indices[i + 2] * 3 + 1]);
+            Model.push_back(normals[indices[i + 2] * 3 + 2]);*/
             i += 3;
-            Model.push_back(new_v);
+            //Model.push_back(new_v);
         }
 
 
         vb.create();
-        vb.bind();
         ebo.create();
+        
+        vb.bind();
         vb.allocate(vertices.data(), vertices.size() * sizeof(float));
 
-        glEnableVertexAttribArray(0);
-        /*glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);*/
-
-        
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
-        
-        /*glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture));
-        
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));*/
-
-
-        vb.release();
-        
         ebo.bind();
         ebo.allocate(_indices.data(), _indices.size() * sizeof(unsigned int));
 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        /*glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+        glEnableVertexAttribArray(2);*/
+
+        
+
+        vb.release();
         ebo.release();
 
     }
@@ -190,18 +187,18 @@ public:
     }
     virtual void bind() override {
         vb.bind();
-        ebo.bind();
     }
 
     virtual void release() override {
         vb.release();
-        ebo.release();
     }
 
     void destroy()
     {
         vb.release();
         ebo.release();
+        vb.destroy();
+        ebo.destroy();
     }
 private:
     int nVertices_;
@@ -209,6 +206,7 @@ private:
     IndexBuffer ebo;
 
     std::vector<unsigned int> _indices;
-    std::vector<Vertex> Model;
+    //std::vector<Vertex> Model;
+    std::vector<float> Model;
 };
 

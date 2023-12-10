@@ -199,8 +199,8 @@ public:
                         unsigned int indexTextureCoord = std::stoi(tokensIndex[1]) - 1;
                         unsigned int indexNormal = std::stoi(tokensIndex[2]) - 1;
                         indices.push_back(indexVertex);
-                        /*indices.push_back(indexTextureCoord);
-                        indices.push_back(indexNormal);*/
+                        indices.push_back(indexTextureCoord);
+                        indices.push_back(indexNormal);
                     }
                 }
             }

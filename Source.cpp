@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "Vertex.h"
 #include "ModelLoader.h"
+#include "GLModel.h"
 
 //const char* vertexShaderSource = R"(
 //    #version 330 core
@@ -126,10 +127,10 @@ int main()
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);*/
-    VertexBuffer vb;
+    /*VertexBuffer vb;
     IndexBuffer ib;
     vb.create();
-    ib.create();
+    ib.create();*/
 
     // Bind VAO
     /*glBindVertexArray(VAO);
@@ -141,25 +142,27 @@ int main()
     ModelLoader mL;
     mL.loadModel("obj.txt");
 
-    vb.bind();
-    vb.allocate(/*vertices.data()*/mL.getVertices().data(), mL.getVertices().size() * sizeof(float));
+    //vb.bind();
+    //vb.allocate(/*vertices.data()*/mL.getVertices().data(), mL.getVertices().size() * sizeof(float));
 
-    // Bind EBO and copy indices data
-    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()* sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);*/
-    ib.bind();
-    ib.allocate(mL.getIndices().data(), mL.getIndices().size() * sizeof(unsigned int));
+    //// Bind EBO and copy indices data
+    ///*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()* sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);*/
+    //ib.bind();
+    //ib.allocate(mL.getIndices().data(), mL.getIndices().size() * sizeof(unsigned int));
 
-    // Set vertex attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    //// Set vertex attribute pointers
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    //glEnableVertexAttribArray(0);
 
-    // Unbind VAO, VBO, and EBO
-    /*glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
-    vb.release();
-    ib.release();
+    //// Unbind VAO, VBO, and EBO
+    ///*glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+    //vb.release();
+    //ib.release();
+    GLModel _model(mL.getVertices(), mL.getTextureCoords(), mL.getNormals(), mL.getIndices());
+
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
@@ -197,9 +200,11 @@ int main()
 
         // Draw cube
         //glBindVertexArray(VAO);
-        vb.bind();
+        //vb.bind();
+        _model.bind();
         glDrawElements(GL_TRIANGLES, mL.getIndices().size(), GL_UNSIGNED_INT, 0);
-        vb.release();
+        _model.release();
+        //vb.release();
         //glBindVertexArray(0);
 
         // Swap buffers and poll events
@@ -211,8 +216,8 @@ int main()
     /*glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);*/
-    vb.destroy();
-    ib.destroy();
+    /*vb.destroy();
+    ib.destroy();*/
     sh.release();
 
     glfwTerminate();
