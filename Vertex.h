@@ -7,5 +7,7 @@ struct Vertex
     float vertex[3];
     float texture[2];
     float normal[3];
+
+
 };
 #pragma pack(pop)
