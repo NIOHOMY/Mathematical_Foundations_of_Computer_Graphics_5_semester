@@ -140,7 +140,7 @@
 
 class ModelLoader {
 public:
-    bool isLoad(const std::string& path) {
+    static bool isLoad(const std::string& path) {
         std::ifstream file(path);
         return file.good();
     }
