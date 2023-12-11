@@ -150,7 +150,10 @@ public:
         if (!file.good()) {
             return false;
         }
-
+        std::vector<float> vertices;
+        std::vector<float> textureCoords;
+        std::vector<float> normals;
+        std::vector<unsigned int> indices;
         std::string line;
         while (std::getline(file, line)) {
             if (line.find("v ") == 0) {
@@ -204,12 +207,30 @@ public:
                     }
                 }
             }
+
+        }
+        Model.resize(indices.size() / 3);
+        int i = 0;
+        while (i < indices.size())
+        {
+            Vertex new_v;
+            _indices.push_back(indices[i]);
+            new_v.vertex[0] = vertices[indices[i] * 3];
+            new_v.vertex[1] = vertices[indices[i] * 3 + 1];
+            new_v.vertex[2] = vertices[indices[i] * 3 + 2];
+            new_v.texture[0] = textureCoords[indices[i + 1] * 2];
+            new_v.texture[1] = textureCoords[indices[i + 1] * 2 + 1];
+            new_v.normal[0] = normals[indices[i + 2] * 3];
+            new_v.normal[1] = normals[indices[i + 2] * 3 + 1];
+            new_v.normal[2] = normals[indices[i + 2] * 3 + 2];
+            Model[indices[i]] = (new_v);
+            i += 3;
         }
 
         return true;
     }
 
-    std::vector<float> getVertices() {
+    /*std::vector<float> getVertices() {
         return vertices;
     }
 
@@ -223,6 +244,15 @@ public:
 
     std::vector<unsigned int> getIndices() {
         return indices;
+    }*/
+
+    std::vector<Vertex> getModel()
+    {
+        return Model;
+    }
+    std::vector<unsigned int> getIndices()
+    {
+        return _indices;
     }
 
 
@@ -280,10 +310,9 @@ private:
         return true;
     }
 
-    std::vector<float> vertices;
-    std::vector<float> textureCoords;
-    std::vector<float> normals;
-    std::vector<unsigned int> indices;
+
+    std::vector<unsigned int> _indices;
+    std::vector<Vertex> Model;
 };
 
 

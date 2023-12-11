@@ -21,31 +21,21 @@ public:
 
 class GLModel : public DrawableObject {
 public:
-    GLModel(std::vector<float> vertices,
-    std::vector<float> textureCoords,
-    std::vector<float> normals,
+    GLModel(std::vector<Vertex> Model,
     std::vector<unsigned int> indices)
     {
 
         nVertices_ = indices.size()/3;
-        Model.resize(indices.size() / 3);
-        int i = 0;
-        while (i < indices.size())
-        {
-            Vertex new_v;
-            _indices.push_back(indices[i]);
-            new_v.vertex[0] = vertices[indices[i] * 3];
-            new_v.vertex[1] = vertices[indices[i] * 3 + 1];
-            new_v.vertex[2] = vertices[indices[i] * 3 + 2];
-            new_v.texture[0] = textureCoords[indices[i + 1] * 2];
-            new_v.texture[1] = textureCoords[indices[i + 1] * 2 + 1];
-            new_v.normal[0] = normals[indices[i + 2] * 3];
-            new_v.normal[1] = normals[indices[i + 2] * 3 + 1];
-            new_v.normal[2] = normals[indices[i + 2] * 3 + 2];
-            Model[indices[i]] = (new_v);
-            i += 3;
-        }
 
+        // vb.create
+        // bind
+        // allocate
+        // release
+
+        // eebo create
+        // bind
+        // allocate
+        // release
 
         vb.create();
         ebo.create();
@@ -54,7 +44,7 @@ public:
         vb.allocate(Model.data(), Model.size() * sizeof(float)*8);
 
         ebo.bind();
-        ebo.allocate(_indices.data(), _indices.size() * sizeof(unsigned int));
+        ebo.allocate(indices.data(), indices.size() * sizeof(unsigned int));
 
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, vertex));
@@ -92,7 +82,5 @@ private:
     VertexBuffer vb;
     IndexBuffer ebo;
 
-    std::vector<unsigned int> _indices;
-    std::vector<Vertex> Model;
 };
 

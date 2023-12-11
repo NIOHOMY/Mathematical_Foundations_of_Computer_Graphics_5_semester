@@ -50,7 +50,7 @@ int main()
     {
         ModelLoader mL;
         mL.loadModel("obj.txt");
-        GLModel _model(mL.getVertices(), mL.getTextureCoords(), mL.getNormals(), mL.getIndices());
+        GLModel _model(mL.getModel(), mL.getIndices());
 
 
         glEnable(GL_DEPTH_TEST);
