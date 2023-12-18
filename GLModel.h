@@ -11,6 +11,7 @@
 #include "Shader.h"
 
 #include "Transform.h"
+#include "BoundingBox.h"
 
 class DrawableObject
 {
@@ -26,7 +27,19 @@ public:
     GLModel(std::vector<Vertex> Model,
     std::vector<unsigned int> indices)
     {
+        glm::vec3 minPoint(std::numeric_limits<float>::max());
+        glm::vec3 maxPoint(std::numeric_limits<float>::lowest());
 
+        for (const Vertex& vertex : Model) {
+            if (vertex.vertex[0] < minPoint.x) minPoint.x = vertex.vertex[0];
+            if (vertex.vertex[1] < minPoint.y) minPoint.y = vertex.vertex[1];
+            if (vertex.vertex[2] < minPoint.z) minPoint.z = vertex.vertex[2];
+
+            if (vertex.vertex[0] > maxPoint.x) maxPoint.x = vertex.vertex[0];
+            if (vertex.vertex[1] > maxPoint.y) maxPoint.y = vertex.vertex[1];
+            if (vertex.vertex[2] > maxPoint.z) maxPoint.z = vertex.vertex[2];
+        }
+        box = { minPoint, maxPoint };
         nVertices_ = indices.size()/3;
 
         // vb.create
@@ -84,10 +97,13 @@ public:
         vb.destroy();
         ebo.destroy();
     }
+    BoundingBox getBoundingBox() const {
+        return box;
+    }
 private:
     int nVertices_;
     VertexBuffer vb;
     IndexBuffer ebo;
-
+    BoundingBox box;
 };
 
