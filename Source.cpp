@@ -11,6 +11,7 @@
 #include "ModelLoader.h"
 #include "GLModel.h"
 Shader sh;
+bool isRightMouseButtonPressed = false;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -27,10 +28,13 @@ void windowSizeCallback(GLFWwindow* window, int width, int height)
 }
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    // Обработка события ввода с мыши.
-    // 'button' - код кнопки (например, GLFW_MOUSE_BUTTON_LEFT)
-    // 'action' - действие (нажатие, отпускание, ...)
-    // 'mods' - модификаторы (например, нажатие Shift или Ctrl)
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+        isRightMouseButtonPressed = true;
+    }
+
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+        isRightMouseButtonPressed = false;
+    }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         std::cout << "Left mouse button pressed" << std::endl;
     }
@@ -89,12 +93,27 @@ int main()
 
         glEnable(GL_DEPTH_TEST);
 
+        glm::vec2 lastCursorPosition;
         while (!glfwWindowShouldClose(window))
         {
+            double x, y;
+            glfwGetCursorPos(window, &x, &y);
+            glm::vec2 currentCursorPosition(x, y);
+            if (isRightMouseButtonPressed) {
+                glm::vec2 cursorPositionDelta = currentCursorPosition - lastCursorPosition;
+                float translationSpeed = 0.01f; 
+                glm::vec3 translationOffset(-cursorPositionDelta.x * translationSpeed, -cursorPositionDelta.y * translationSpeed, 0.0f);
+                _model.setPosition(_model.position() + translationOffset);
+            }
+
+            lastCursorPosition = currentCursorPosition;
+
+
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             //sh.bind();
+            _model.bind(sh);
 
             glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, -3.0f),  // где камера
                 glm::vec3(0.0f, 0.0f, 0.0f),  // ориг
@@ -103,17 +122,16 @@ int main()
             unsigned int viewLoc = glGetUniformLocation(sh.get(), "view");
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-            glm::mat4 model = glm::mat4(1.0f);
+            //glm::mat4 model = _model.transformationMatrix();//glm::mat4(1.0f);
             glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-            unsigned int modelLoc = glGetUniformLocation(sh.get(), "model");
+            //unsigned int modelLoc = glGetUniformLocation(sh.get(), "model");
             unsigned int projectionLoc = glGetUniformLocation(sh.get(), "projection");
 
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-            _model.bind(sh);
             glDrawElements(GL_TRIANGLES, mL.getIndices().size(), GL_UNSIGNED_INT, 0);
             _model.release(sh);
 

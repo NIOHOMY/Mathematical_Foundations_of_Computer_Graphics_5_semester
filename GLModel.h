@@ -67,6 +67,9 @@ public:
     virtual void bind(Shader& shader) override {
         shader.bind();
         vb.bind();
+
+        glm::mat4 modelMatrix = transformationMatrix();
+        shader.setMat4("matrix4", modelMatrix);
     }
 
     virtual void release(Shader& shader) override {
