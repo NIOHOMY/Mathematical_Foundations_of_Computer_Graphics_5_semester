@@ -99,14 +99,13 @@ int main()
     {
         ModelLoader mL;
         mL.loadModel("obj.txt");
-        //GLModel _model(mL.getModel(), mL.getIndices());
         _model = new GLModel(mL.getModel(), mL.getIndices());
 
 
         glEnable(GL_DEPTH_TEST);
 
         glm::vec2 lastCursorPosition;
-        float rotationAngle = 0.1f;
+        float rotationAngle = 5.0f;
         while (!glfwWindowShouldClose(window))
         {
             double x, y;

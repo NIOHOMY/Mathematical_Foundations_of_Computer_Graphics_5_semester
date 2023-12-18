@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "AffineTransform3D.h"
 
 class Transform {
 public:
@@ -32,9 +33,9 @@ public:
     }
 
     glm::mat4 transformationMatrix() const {
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position);
-        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), m_scale);
+        glm::mat4 translationMatrix = Translation(m_position.x, m_position.y);//glm::translate(glm::mat4(1.0f), m_position);
+        glm::mat4 rotationMatrix = Rotation(m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));//glm::rotate(glm::mat4(1.0f), m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 scaleMatrix = Scaling(m_scale.x, m_scale.y, m_scale.z);//glm::scale(glm::mat4(1.0f), m_scale);
 
         return translationMatrix * rotationMatrix * scaleMatrix;
     }

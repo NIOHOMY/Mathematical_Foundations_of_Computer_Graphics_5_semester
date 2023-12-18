@@ -84,24 +84,41 @@ glm::mat4 Identity()
     return glm::mat4(1.0f);
 }
 
-glm::mat4 Rotation(double angle)
+glm::mat4 Rotation(double angle, const glm::vec3& axis)
 {
     angle = glm::radians(static_cast<float>(angle));
+    float c = std::cos(angle);
+    float s = std::sin(angle);
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
     glm::mat4 result(1.0f);
-    result[0][0] = std::cos(angle);
-    result[0][1] = -std::sin(angle);
-    result[1][0] = std::sin(angle);
-    result[1][1] = std::cos(angle);
+    result[0][0] = c + (1 - c) * x * x;
+    result[0][1] = (1 - c) * x * y - s * z;
+    result[0][2] = (1 - c) * x * z + s * y;
+
+    result[1][0] = (1 - c) * x * y + s * z;
+    result[1][1] = c + (1 - c) * y * y;
+    result[1][2] = (1 - c) * y * z - s * x;
+
+    result[2][0] = (1 - c) * x * z - s * y;
+    result[2][1] = (1 - c) * y * z + s * x;
+    result[2][2] = c + (1 - c) * z * z;
+
     return result;
 }
 
-glm::mat4 Scaling(double scaleX, double scaleY)
+
+glm::mat4 Scaling(double scaleX, double scaleY, double scaleZ)
 {
     glm::mat4 result(1.0f);
     result[0][0] = scaleX;
     result[1][1] = scaleY;
+    result[2][2] = scaleZ;
     return result;
 }
+
 
 glm::mat4 ReflectionX()
 {
