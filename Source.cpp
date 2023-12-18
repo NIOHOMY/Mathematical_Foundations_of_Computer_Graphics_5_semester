@@ -10,12 +10,43 @@
 #include "Vertex.h"
 #include "ModelLoader.h"
 #include "GLModel.h"
-
+Shader sh;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
+
+void windowSizeCallback(GLFWwindow* window, int width, int height)
+{
+    // Обработка события изменения размера окна.
+    // Здесь необходимо произвести перерасчет матрицы проекции
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+    unsigned int projectionLoc = glGetUniformLocation(sh.get(), "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    // Обработка события ввода с мыши.
+    // 'button' - код кнопки (например, GLFW_MOUSE_BUTTON_LEFT)
+    // 'action' - действие (нажатие, отпускание, ...)
+    // 'mods' - модификаторы (например, нажатие Shift или Ctrl)
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        std::cout << "Left mouse button pressed" << std::endl;
+    }
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    // Обработка события ввода с клавиатуры.
+    // 'key' - код клавиши
+    // 'action' - действие (нажатие, отпускание, удерживание)
+    // 'mods' - модификаторы (например, нажатие Shift или Ctrl)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
 
 int main()
 {
@@ -37,12 +68,15 @@ int main()
         return -1;
     }
 
+    /*glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);*/
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetWindowSizeCallback(window, windowSizeCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetKeyCallback(window, keyCallback);
 
-    
-
-    Shader sh;
+   
     sh.createByShaders("shader.vert.txt", "shader.frag.txt");
     
 
@@ -60,7 +94,7 @@ int main()
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            sh.bind();
+            //sh.bind();
 
             glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, -3.0f),  // где камера
                 glm::vec3(0.0f, 0.0f, 0.0f),  // ориг
@@ -79,9 +113,9 @@ int main()
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-            _model.bind();
+            _model.bind(sh);
             glDrawElements(GL_TRIANGLES, mL.getIndices().size(), GL_UNSIGNED_INT, 0);
-            _model.release();
+            _model.release(sh);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -91,7 +125,7 @@ int main()
     }
 
     
-    sh.release();
+    //sh.release();
 
     glfwTerminate();
     return 0;

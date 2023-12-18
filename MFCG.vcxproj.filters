@@ -19,6 +19,36 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{97f12897-a441-4aa5-9dd1-a2206d3d7d97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Event">
+      <UniqueIdentifier>{85c62607-da61-44c3-abdb-c4d0d7d965e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event\MouseEvents">
+      <UniqueIdentifier>{b84de78f-ffe0-48f2-884b-699176012904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event\WindowEvents">
+      <UniqueIdentifier>{052395d2-359b-4604-9dd2-386a850c5a63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Window">
+      <UniqueIdentifier>{ce82e612-1e8d-418c-92bc-7deee4cebf7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AT">
+      <UniqueIdentifier>{0385f37a-2262-46ed-8045-b184b990fdce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Camera">
+      <UniqueIdentifier>{0e6fb7a6-5f97-418d-bc35-a9623896e10e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BuffersAndShaders">
+      <UniqueIdentifier>{57abd621-00e7-49ce-b3f9-cf766a9d7e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\libs">
+      <UniqueIdentifier>{cf96046a-56be-434f-80dd-3b229991414a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event\Key">
+      <UniqueIdentifier>{70d783a9-cab8-48c7-9571-6f94cefe7839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event\Codes">
+      <UniqueIdentifier>{cdce33e5-c840-4e69-a4b3-c12bc5ba3ceb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -30,29 +60,8 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Source Files\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="GLModel.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dependencies\include\glad\glad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\GLFW\glfw3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\GLFW\glfw3native.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\KHR\khrplatform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ModelLoader.h">
       <Filter>Source Files\Loader</Filter>
     </ClInclude>
@@ -61,6 +70,78 @@
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Header Files\AT</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseButtonEvent.h">
+      <Filter>Header Files\Event\MouseEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseButtonPressedEvent.h">
+      <Filter>Header Files\Event\MouseEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseButtonReleasedEvent.h">
+      <Filter>Header Files\Event\MouseEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseMovedEvent.h">
+      <Filter>Header Files\Event\MouseEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseScrolledEvent.h">
+      <Filter>Header Files\Event\MouseEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowCloseEvent.h">
+      <Filter>Header Files\Event\WindowEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowResizeEvent.h">
+      <Filter>Header Files\Event\WindowEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files\BuffersAndShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\BuffersAndShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\glad\glad.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\GLFW\glfw3.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\GLFW\glfw3native.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\KHR\khrplatform.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEvent.h">
+      <Filter>Header Files\Event\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\AT</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyReleasedEvent.h">
+      <Filter>Header Files\Event\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPressedEvent.h">
+      <Filter>Header Files\Event\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyCode.h">
+      <Filter>Header Files\Event\Codes</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCode.h">
+      <Filter>Header Files\Event\Codes</Filter>
+    </ClInclude>
+    <ClInclude Include="AffineTransform3D.h">
+      <Filter>Header Files\AT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,20 +20,37 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
-    <ClCompile Include="GLModel.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffineTransform3D.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="dependencies\include\glad\glad.h" />
     <ClInclude Include="dependencies\include\GLFW\glfw3.h" />
     <ClInclude Include="dependencies\include\GLFW\glfw3native.h" />
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="GLModel.h" />
+    <ClInclude Include="KeyCode.h" />
+    <ClInclude Include="KeyEvent.h" />
+    <ClInclude Include="KeyPressedEvent.h" />
+    <ClInclude Include="KeyReleasedEvent.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelLoader.h" />
+    <ClInclude Include="MouseButtonEvent.h" />
+    <ClInclude Include="MouseButtonPressedEvent.h" />
+    <ClInclude Include="MouseButtonReleasedEvent.h" />
+    <ClInclude Include="MouseCode.h" />
+    <ClInclude Include="MouseMovedEvent.h" />
+    <ClInclude Include="MouseScrolledEvent.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowCloseEvent.h" />
+    <ClInclude Include="WindowResizeEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
