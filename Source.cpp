@@ -40,20 +40,28 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-        isRightMouseButtonPressed = true;
+    switch (button) {
+    case GLFW_MOUSE_BUTTON_RIGHT:
+        if (action == GLFW_PRESS) {
+            isRightMouseButtonPressed = true;
+        }
+        if (action == GLFW_RELEASE) {
+            isRightMouseButtonPressed = false;
+        }
+        break;
+    case GLFW_MOUSE_BUTTON_LEFT:
+        if (action == GLFW_PRESS) {
+            isLeftMouseButtonPressed = true;
+        }
+        if (action == GLFW_RELEASE) {
+            isLeftMouseButtonPressed = false;
+        }
+        break;
+    default:
+        break;
     }
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
-        isRightMouseButtonPressed = false;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        isLeftMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-        isLeftMouseButtonPressed = false;
-    }
-
 }
+
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -108,10 +116,10 @@ int main()
         float rotationAngle = 5.0f;
         while (!glfwWindowShouldClose(window))
         {
+
             double x, y;
             glfwGetCursorPos(window, &x, &y);
             glm::vec2 currentCursorPosition(x, y);
-
             if (isRightMouseButtonPressed) {
                 glm::vec2 cursorPositionDelta = currentCursorPosition - lastCursorPosition;
                 float translationSpeed = 0.01f; 
@@ -120,9 +128,7 @@ int main()
             }
             lastCursorPosition = currentCursorPosition;
             if (isLeftMouseButtonPressed) {
-
                 _model->setRotation(_model->rotation() + rotationAngle);
-
             }
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -166,9 +172,6 @@ int main()
 
         _model->destroy();
     }
-
-    
-    //sh.release();
 
     glfwTerminate();
     return 0;

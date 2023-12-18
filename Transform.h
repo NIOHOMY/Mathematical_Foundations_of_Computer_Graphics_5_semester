@@ -39,9 +39,7 @@ public:
 
         return translationMatrix * rotationMatrix * scaleMatrix;
     }
-    glm::mat4 translationMatrix() const {
-        return glm::translate(glm::mat4(1.0f), m_position);
-    }
+
 
 private:
     glm::vec3 m_position;
