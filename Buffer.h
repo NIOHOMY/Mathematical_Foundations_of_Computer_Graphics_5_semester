@@ -33,6 +33,7 @@ public:
 
     void allocate(const void* data, size_t size)
     {
+        glBindBuffer(GL_ARRAY_BUFFER, m_id_vbo);
         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
     }
 

@@ -52,15 +52,13 @@ public:
         // allocate
         // release
 
-        vb.create();
-        ebo.create();
-        
+        vb.create();   
         vb.bind();
         vb.allocate(Model.data(), Model.size() * sizeof(float)*8);
 
+        ebo.create();
         ebo.bind();
         ebo.allocate(indices.data(), indices.size() * sizeof(unsigned int));
-
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, vertex));
         glEnableVertexAttribArray(0);
@@ -69,8 +67,8 @@ public:
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(2);
         
-
         vb.release();
+
         ebo.release();
 
     }
