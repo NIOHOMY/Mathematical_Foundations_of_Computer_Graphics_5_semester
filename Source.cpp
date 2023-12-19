@@ -103,17 +103,17 @@ int main()
     sh.createByShaders("shader.vert.txt", "shader.frag.txt");
     
 
-    if (ModelLoader::isLoad("obj.txt"))
+    if (ModelLoader::isLoad("obj2.txt"))
     {
         ModelLoader mL;
-        mL.loadModel("obj.txt");
+        mL.loadModel("obj2.txt");
         _model = new GLModel(mL.getModel(), mL.getIndices());
 
 
         glEnable(GL_DEPTH_TEST);
 
         glm::vec2 lastCursorPosition;
-        float rotationAngle = 5.0f;
+        float rotationAngle = 0.1f;
         while (!glfwWindowShouldClose(window))
         {
 
