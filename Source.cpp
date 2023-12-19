@@ -142,12 +142,12 @@ int main()
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
             */
             BoundingBox bbox = _model->getBoundingBox();
-            glm::vec3 objectPosition = (_model->position() + bbox.minPoint + bbox.maxPoint) / 2.0f;
-            glm::vec3 objectSize = bbox.maxPoint - bbox.minPoint;
+            glm::vec3 objectPosition = (_model->position() + bbox.minPoint + bbox.maxPoint) * scaleRatio / 2.0f;
+            glm::vec3 objectSize = (bbox.maxPoint - bbox.minPoint) * scaleRatio;
 
 
-            float distance = glm::length(glm::vec3(1.0f, 3.0f, -3.0f) - objectPosition);
-            glm::vec3 cameraDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(1.0f, 3.0f, -3.0f));
+            float distance = glm::length(glm::vec3(1.0f, 1.0f, -5.0f) - objectPosition);
+            glm::vec3 cameraDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(1.0f, 1.0f, -5.0f));
             glm::vec3 newCameraPosition = objectPosition - cameraDirection * (distance - glm::length(objectSize) * scaleRatio);
 
             _model->bind(sh);
