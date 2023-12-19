@@ -15,6 +15,7 @@ bool isRightMouseButtonPressed = false;
 bool isLeftMouseButtonPressed = false;
 
 float scaleRatio = 1.0f;
+bool scaleRatioFlag = false;
 GLModel* _model;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -30,7 +31,7 @@ void windowSizeCallback(GLFWwindow* window, int width, int height)
 }
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if (yoffset > 0) {
+    if (yoffset > 0 && !scaleRatioFlag) {
         scaleRatio *= 1.15f;
     }
     else {
@@ -114,6 +115,9 @@ int main()
 
         glm::vec2 lastCursorPosition;
         float rotationAngle = 0.1f;
+
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
         while (!glfwWindowShouldClose(window))
         {
 
@@ -133,36 +137,21 @@ int main()
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            /*
-            glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, -3.0f),  // где камера
-                glm::vec3(0.0f, 0.0f, 0.0f),  // ориг
-                glm::vec3(0.0f, 1.0f, 0.0f)); // наверх
 
-            unsigned int viewLoc = glGetUniformLocation(sh.get(), "view");
-            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-            */
             BoundingBox bbox = _model->getBoundingBox();
             glm::vec3 objectPosition = (_model->position() + bbox.minPoint + bbox.maxPoint) * scaleRatio / 2.0f;
             glm::vec3 objectSize = (bbox.maxPoint - bbox.minPoint) * scaleRatio;
 
+            float distance = glm::length(glm::vec3(0.0f, 0.0f, -10.0f) - objectPosition);
+            scaleRatioFlag = (distance - glm::length(objectSize) <= 0);
 
-            float distance = glm::length(glm::vec3(1.0f, 1.0f, -5.0f) - objectPosition);
-            glm::vec3 cameraDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(1.0f, 1.0f, -5.0f));
-            glm::vec3 newCameraPosition = objectPosition - cameraDirection * (distance - glm::length(objectSize) * scaleRatio);
-
+            
             _model->bind(sh);
 
-            glm::mat4 view = glm::lookAt(newCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             unsigned int viewLoc = glGetUniformLocation(sh.get(), "view");
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-            
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
             unsigned int projectionLoc = glGetUniformLocation(sh.get(), "projection");
-
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-
             
             glDrawElements(GL_TRIANGLES, mL.getIndices().size(), GL_UNSIGNED_INT, 0);
             _model->release(sh);
