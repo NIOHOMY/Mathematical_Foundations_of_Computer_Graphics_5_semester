@@ -14,7 +14,7 @@ Shader sh;
 bool isRightMouseButtonPressed = false;
 bool isLeftMouseButtonPressed = false;
 
-float scaleRatio = 1.0f;
+float scaleRatio = 1.2f;
 bool scaleRatioFlag = false;
 GLModel* _model;
 
@@ -32,12 +32,13 @@ void windowSizeCallback(GLFWwindow* window, int width, int height)
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (yoffset > 0 && !scaleRatioFlag) {
-        scaleRatio *= 1.15f;
+        //scaleRatio *= 1.15f;
+        _model->setScale(glm::vec3(scaleRatio)* _model->scale());
     }
     else {
-        scaleRatio /= 1.15f;
+        //scaleRatio /= 1.15f;
+        _model->setScale(_model->scale()/glm::vec3(scaleRatio));
     }
-    _model->setScale(glm::vec3(scaleRatio));
 }
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -139,8 +140,8 @@ int main()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             BoundingBox bbox = _model->getBoundingBox();
-            glm::vec3 objectPosition = (_model->position() + bbox.minPoint + bbox.maxPoint) * scaleRatio / 2.0f;
-            glm::vec3 objectSize = (bbox.maxPoint - bbox.minPoint) * scaleRatio;
+            glm::vec3 objectPosition = (_model->position() + bbox.minPoint + bbox.maxPoint) * _model->scale() / 2.0f;
+            glm::vec3 objectSize = (bbox.maxPoint - bbox.minPoint) * _model->scale();
 
             float distance = glm::length(glm::vec3(0.0f, 0.0f, -10.0f) - objectPosition);
             scaleRatioFlag = (distance - glm::length(objectSize) <= 0);
