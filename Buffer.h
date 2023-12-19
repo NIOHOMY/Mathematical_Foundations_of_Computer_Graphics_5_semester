@@ -27,8 +27,6 @@ public:
         glGenBuffers(1, &m_id_vbo);
         glGenVertexArrays(1, &m_id_vao);
 
-        /*glGenBuffers(1, &vboTextureCoords_);
-        glGenBuffers(1, &vboNormals_);*/
     }
 
     void allocate(const void* data, size_t size)
@@ -43,16 +41,12 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, m_id_vbo);
         glBindVertexArray(m_id_vao);
 
-        /*glBindBuffer(GL_ARRAY_BUFFER, vboTextureCoords_);
-        glBindBuffer(GL_ARRAY_BUFFER, vboNormals_);*/
     }
 
     void release()
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-        /*glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);*/
     }
 
     void destroy()
@@ -66,9 +60,6 @@ public:
 private:
     unsigned int m_id_vbo;
     unsigned int m_id_vao;
-
-    /*unsigned int vboTextureCoords_;
-    unsigned int vboNormals_;*/
 };
 
 class IndexBuffer

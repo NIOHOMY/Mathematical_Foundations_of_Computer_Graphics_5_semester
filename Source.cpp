@@ -133,7 +133,6 @@ int main()
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
             /*
             glm::mat4 view = glm::lookAt(glm::vec3(1.0f, 3.0f, -3.0f),  // где камера
                 glm::vec3(0.0f, 0.0f, 0.0f),  // ориг
@@ -151,6 +150,8 @@ int main()
             glm::vec3 cameraDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - glm::vec3(1.0f, 3.0f, -3.0f));
             glm::vec3 newCameraPosition = objectPosition - cameraDirection * (distance - glm::length(objectSize) * scaleRatio);
 
+            _model->bind(sh);
+
             glm::mat4 view = glm::lookAt(newCameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             unsigned int viewLoc = glGetUniformLocation(sh.get(), "view");
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -162,7 +163,7 @@ int main()
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-            _model->bind(sh);
+            
             glDrawElements(GL_TRIANGLES, mL.getIndices().size(), GL_UNSIGNED_INT, 0);
             _model->release(sh);
 

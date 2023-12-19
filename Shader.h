@@ -92,7 +92,6 @@ void Shader::createByShaders(const std::string& vertexShaderPath, const std::str
             glGetProgramInfoLog(m_shaderId, 512, NULL, infoLog);
             std::cout << "Shader program linking failed:\n" << infoLog << std::endl;
         }
-
     }
     catch (const std::runtime_error& e)
     {
@@ -125,7 +124,7 @@ void Shader::setFloat(const std::string& name, float value)
 {
    
     glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
-    glUseProgram(0);
+    //glUseProgram(0);
 }
 
 void Shader::setVec2(const std::string& name, const glm::vec2& value)

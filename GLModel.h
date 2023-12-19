@@ -42,35 +42,34 @@ public:
         box = { minPoint, maxPoint };
         nVertices_ = indices.size()/3;
 
+        // eebo create
+        // bind
+        // allocate
+        // release
+        
         // vb.create
         // bind
         // allocate
         // release
 
-        // eebo create
-        // bind
-        // allocate
-        // release
-
-        vb.create();   
-        vb.bind();
-        vb.allocate(Model.data(), Model.size() * sizeof(float)*8);
 
         ebo.create();
         ebo.bind();
         ebo.allocate(indices.data(), indices.size() * sizeof(unsigned int));
+        ebo.release();
 
+
+        vb.create();   
+        vb.bind();
+        vb.allocate(Model.data(), Model.size() * sizeof(float)*8);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, vertex));
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texture));
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(2);
-        
         vb.release();
-
-        ebo.release();
-
+        
     }
     virtual int nVertices() {
         return nVertices_;
@@ -78,14 +77,16 @@ public:
     virtual void bind(Shader& shader) override {
         shader.bind();
         vb.bind();
+        ebo.bind();
 
         glm::mat4 modelMatrix = transformationMatrix();
         shader.setMat4("matrix4", modelMatrix);
     }
 
     virtual void release(Shader& shader) override {
+        ebo.release();
         vb.release();
-        //shader.release();
+        shader.release();
     }
 
     void destroy()
