@@ -18,6 +18,9 @@ float scaleRatio = 1.2f;
 bool scaleRatioFlag = false;
 GLModel* _model;
 
+float rotationAngle = 10.0f;
+float translationSpeed = 0.01f;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -32,11 +35,9 @@ void windowSizeCallback(GLFWwindow* window, int width, int height)
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (yoffset > 0 && !scaleRatioFlag) {
-        //scaleRatio *= 1.15f;
         _model->setScale(glm::vec3(scaleRatio)* _model->scale());
     }
     else {
-        //scaleRatio /= 1.15f;
         _model->setScale(_model->scale()/glm::vec3(scaleRatio));
     }
 }
@@ -115,8 +116,7 @@ int main()
         glEnable(GL_DEPTH_TEST);
 
         glm::vec2 lastCursorPosition;
-        float rotationAngle = 0.1f;
-
+        
         glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
         while (!glfwWindowShouldClose(window))
@@ -125,15 +125,15 @@ int main()
             double x, y;
             glfwGetCursorPos(window, &x, &y);
             glm::vec2 currentCursorPosition(x, y);
+             
             if (isRightMouseButtonPressed) {
                 glm::vec2 cursorPositionDelta = currentCursorPosition - lastCursorPosition;
-                float translationSpeed = 0.01f; 
                 glm::vec3 translationOffset(-cursorPositionDelta.x * translationSpeed, -cursorPositionDelta.y * translationSpeed, 0.0f);
                 _model->setPosition(_model->position() + translationOffset);
             }
             lastCursorPosition = currentCursorPosition;
             if (isLeftMouseButtonPressed) {
-                _model->setRotation(_model->rotation() + rotationAngle);
+                _model->setRotation(_model->rotation() + rotationAngle* translationSpeed);
             }
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
