@@ -33,7 +33,7 @@ GLAD & GLFW
 
 <h4 align="center">2 часть 3</h4>
 
-[Перейти к лаболаторной 2-2](https://github.com/NIOHOMY/Mathematical_Foundations_of_Computer_Graphics_5_semester/tree/lab2-3)
+[Перейти к лаболаторной 2-3](https://github.com/NIOHOMY/Mathematical_Foundations_of_Computer_Graphics_5_semester/tree/lab2-3)
 
 ##
 
@@ -43,7 +43,7 @@ GLAD & GLFW
   классы для считывания 3d объектов, текстур, нормалей, цвета, координат, обработка через классы Shaders, Buffers, АП
 </p>
 
-[Перейти к лаболаторной 2-2](https://github.com/NIOHOMY/Mathematical_Foundations_of_Computer_Graphics_5_semester/tree/lab2-4)
+[Перейти к лаболаторной 2-4](https://github.com/NIOHOMY/Mathematical_Foundations_of_Computer_Graphics_5_semester/tree/lab2-4)
 
 ##
 
